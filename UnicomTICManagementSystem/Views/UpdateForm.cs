@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace UnicomTICManagementSystem.Views
 {
-    public partial class TimeTableForm : Form
+    public partial class UpdateForm : Form
     {
-        public TimeTableForm()
+        public UpdateForm()
         {
             InitializeComponent();
-        }
-
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

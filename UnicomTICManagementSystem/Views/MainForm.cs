@@ -53,5 +53,24 @@ namespace UnicomTICManagementSystem.Views
             }
 
         }
+
+        private void Subjects_btn_Click(object sender, EventArgs e)
+        {
+            SubjectsForm subjectsForm = new SubjectsForm();
+            subjectsForm.Show();
+            this.Hide();
+        }
+
+        private void Rooms_btn_Click(object sender, EventArgs e)
+        {
+            RoomsForm roomsForm = new RoomsForm();
+            roomsForm.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

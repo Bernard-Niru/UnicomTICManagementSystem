@@ -16,11 +16,11 @@ namespace UnicomTICManagementSystem.Controllers
         //Getting Data From Courses Table ===========================================================
         public List<Course> GetAllCourses()
         {
-            var courseList = new List<Course>();         
+            var courseList = new List<Course>();
 
-            using (var getDBconn = DBConnection.GetConnection()) 
+            using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand("SELECT * FROM Courses",getDBconn);
+                var cmd = new SQLiteCommand("SELECT * FROM Courses", getDBconn);
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -28,7 +28,7 @@ namespace UnicomTICManagementSystem.Controllers
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1)
-                    }); 
+                    });
                 }
             }
             return courseList;
@@ -43,6 +43,40 @@ namespace UnicomTICManagementSystem.Controllers
                 cmd.ExecuteNonQuery();
             }
         }
+        public Course GetCourseById(int id)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("SELECT * FROM Courses WHERE Id = @Id", getDBconn);
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Course
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                        };
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        //Deleting Data From Subjects Table =========================================================
+        public void DeleteCourse(int id)
+        { 
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("DELETE FROM Courses WHERE Id = @id", getDBconn);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        
     }
        
 }

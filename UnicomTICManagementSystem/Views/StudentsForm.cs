@@ -27,7 +27,7 @@ namespace UnicomTICManagementSystem.Views
             LoadStudents();
             LoadCourses();
         }
-        private void LoadStudents()
+        private void LoadStudents() // Load data from Students table to DataGridView
         {
             Student_dgv.DataSource = null;
             Student_dgv.DataSource = studentController.GetAllStudents();
@@ -35,6 +35,21 @@ namespace UnicomTICManagementSystem.Views
             Student_dgv.Columns["CourseID"].Visible = false;
             Student_dgv.Columns["UserID"].Visible = false ;
             Student_dgv.ClearSelection();
+        }
+        private void LoadCourses() // Load course to ComboBox
+        {
+            var courses = courseController.GetAllCourses();
+            course_cbx.DataSource = courses;
+            course_cbx.DisplayMember = "Name";
+            course_cbx.ValueMember = "Id";
+            course_cbx.SelectedIndex = -1;
+        }
+        private void ClearForm() 
+        {
+            name_txt.Clear();
+            Username_txt.Clear();
+            address_txt.Clear();
+            course_cbx.SelectedIndex = -1;
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -49,13 +64,6 @@ namespace UnicomTICManagementSystem.Views
 
         private void button3_Click(object sender, EventArgs e)
         {
-
-            if (Student_dgv.SelectedRows.Count > 0) 
-            {
-                int id = Convert.ToInt32(Student_dgv.SelectedRows[0].Cells["Id"].Value);
-                studentController.DeleteStudent(id);
-                LoadStudents();
-            }
             
         }
 
@@ -67,40 +75,34 @@ namespace UnicomTICManagementSystem.Views
         private void label1_Click(object sender, EventArgs e)
         {
 
-        }
-        private void LoadCourses() 
+        }     
+        private void Add_btn_Click(object sender, EventArgs e) // Adding student to both Students & Users Table
         {
-            var courses = courseController.GetAllCourses();
-            course_cbx.DataSource = courses;
-            course_cbx.DisplayMember = "Name";
-            course_cbx.ValueMember = "Id";
-        }
-      
-        private void Add_btn_Click(object sender, EventArgs e)
-        {
+            string userName = Username_txt.Text.Trim();
+            string name = name_txt.Text.Trim();
             User user = new User
             {
-                UserName = name_txt.Text.Trim(),
-                Password = "12345",
+                Name = name,
+                Username = userName,
+                Password = "12345", 
                 Role = "Student"
             };
-            userController.AddUser(user);
-            usersForm.LoadUsers();
 
-            //Getting User ID of the respective Student
-            User getuserid =userController.GetUserId(user);
+            userController.AddUser(user);
+            int? userId = userController.GetUserIDByUsername(userName); // Getting the UserID from Users table by Username
+
             Student student = new Student
             {
-                Name = name_txt.Text.Trim(),
+                Name = name,
+                Username=userName,
                 Address = address_txt.Text.Trim(),
                 CourseID = (int)course_cbx.SelectedValue,
-                UserID = getuserid?.Id ?? 0
+                UserID = (int)userId
             };
+
             studentController.AddStudent(student);
             LoadStudents();
-            
-            name_txt.Clear();
-            address_txt.Clear();
+            ClearForm();
             MessageBox.Show("Student Added Successfully");
         }
 
@@ -137,6 +139,7 @@ namespace UnicomTICManagementSystem.Views
                     if (student != null)
                     {
                         name_txt.Text = student.Name;
+                        Username_txt.Text = student.Username;
                         address_txt.Text = student.Address;
                         course_cbx.SelectedValue = student.CourseID;
                     }
@@ -147,18 +150,26 @@ namespace UnicomTICManagementSystem.Views
 
                 selectedStudentId = -1;
             }
-
-
-
         }
 
-        private void Delete_btn_Click(object sender, EventArgs e)
+        private void Delete_btn_Click(object sender, EventArgs e) // Deleting Student from Students & Users Table
         {
-            if (Student_dgv.SelectedRows.Count > 0)
+            string username = Username_txt.Text.Trim();
+            if (selectedStudentId == -1)
             {
-                int id = Convert.ToInt32(Student_dgv.SelectedRows[0].Cells["Id"].Value);
-                studentController.DeleteStudent(id);
+                MessageBox.Show("Please select a student to delete");
+                return;
+            }
+
+            var confirmatiion = MessageBox.Show("Are you sure you want to delete this student?", "Confirm Delete", MessageBoxButtons.YesNo);
+            if (confirmatiion == DialogResult.Yes)
+            {
+                studentController.DeleteStudent(selectedStudentId);
+                int?userid = userController.GetUserIDByUsername(username);
+                userController.DeleteUser((int)userid);
+                ClearForm();
                 LoadStudents();
+                MessageBox.Show("Student Deleted Successfully");
             }
         }
 
@@ -167,17 +178,19 @@ namespace UnicomTICManagementSystem.Views
        
             
         }
-
-
-        private void Update_btn_Click(object sender, EventArgs e)
+        private void Update_btn_Click(object sender, EventArgs e) // Updating student from both Students & Users table 
         {
+            string name = name_txt.Text.Trim();
+            string username = Username_txt.Text.Trim();
+            string address = address_txt.Text.Trim();
+
             if (selectedStudentId == -1)
             {
                 MessageBox.Show("Please select a student to update.");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(name_txt.Text) || string.IsNullOrWhiteSpace(address_txt.Text))
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address))
             {
                 MessageBox.Show("Please enter both Name and Address.");
                 return;
@@ -186,32 +199,40 @@ namespace UnicomTICManagementSystem.Views
             var student = new Student
             {
                 Id = selectedStudentId,
-                Name = name_txt.Text,
-                Address = address_txt.Text,
+                Name = name,
+                Username = username,
+                Address = address,
                 CourseID = (int)course_cbx.SelectedValue
-                
+
             };
             studentController.UpdateStudent(student);
+            ClearForm() ;   
             LoadStudents();
-            
+            MessageBox.Show("Student Updated Successfully");
 
-            User username = new User
+            int? userId = userController.GetUserIDByUsername(username);
+            string userpswd = userController.GetPswdByUsername(username);
+            var user = new User
             {
-                UserName = name_txt.Text,                          
-            };
-            User getuserid = userController.GetUserId(username);
-            User user = new User
-            {
-                Id = getuserid.Id,
-                UserName = name_txt.Text,
-                Password = "12345",
+                Id = (int)userId,
+                Name = name_txt.Text,
+                Username = Username_txt.Text,
+                Password = userpswd,
                 Role = "Student"
-
             };
 
             userController.UpdateUser(user);
-            usersForm.LoadUsers();
-            MessageBox.Show("Student Updated Successfully");
+            usersForm.LoadUsers(); 
+                      
+        }
+
+        private void address_txt_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Username_txt_TextChanged(object sender, EventArgs e)
+        {
 
         }
     }

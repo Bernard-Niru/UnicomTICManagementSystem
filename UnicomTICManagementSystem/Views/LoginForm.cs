@@ -29,42 +29,36 @@ namespace UnicomTICManagementSystem
         
         
 
-        private void Register_btn_Click(object sender, EventArgs e)
+        private void Register_btn_Click(object sender, EventArgs e) // Login
         {         
             User user = new User();
-            user.UserName = name_txt.Text.Trim();
+            user.Username = name_txt.Text.Trim();
             user.Password = pswd_txt.Text.Trim(); 
            
             User user1 = userController.GettingLoginInfo(user);
-            if (user1.UserName == user.UserName && user1.Password == user.Password)
+            if (user1.Username == user.Username && user1.Password == user.Password)
             {
-                MainForm mainForm = new MainForm();
+                
                 if (user1.Role == "Admin")
                 {
-                    Role.CurrentRole = "Admin";                       
-                    mainForm.Show();
-                    this.Hide();
+                    Role.CurrentRole = "Admin";
                 }
-                else if (user1.Role == "Student")
+                else if (user1.Role == "Student")       //Assigning the role to a static class
 
                 {
                     Role.CurrentRole = "Student";
-                    mainForm.Show();
-                    this.Hide();
                 }
                 else if (user1.Role == "Lecturer")
                 {
                     Role.CurrentRole = "Lecturer";
-                    mainForm.Show();
-                    this.Hide();
                 }
-                else 
+                else
                 {
                     Role.CurrentRole = "Staff";
-                    mainForm.Show();
-                    this.Hide();
                 }
-
+                MainForm mainForm = new MainForm();
+                mainForm.Show();
+                this.Hide();
             }
             else 
             {

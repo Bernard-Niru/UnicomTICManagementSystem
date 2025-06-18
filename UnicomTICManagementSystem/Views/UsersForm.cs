@@ -38,7 +38,7 @@ namespace UnicomTICManagementSystem.Views
         private void LoadRoles()
         {
             role_cbx.DataSource = new List<string> { "Admin", "Lecturer", "Staff" };
-
+            role_cbx.SelectedIndex = -1;
 
         }
 
@@ -46,7 +46,8 @@ namespace UnicomTICManagementSystem.Views
         {
             User user = new User
             {
-                UserName = name_txt.Text.Trim(),
+                Name = name_txt.Text.Trim(),
+                Username = username_txt.Text.Trim(),
                 Password = "12345",
                 Role =(string)role_cbx.SelectedValue
 
@@ -54,7 +55,7 @@ namespace UnicomTICManagementSystem.Views
             };
             userController.AddUser(user);
             LoadUsers();
-            name_txt.Clear();
+            username_txt.Clear();
             MessageBox.Show("User Added Successfully");
         }
 
@@ -82,14 +83,14 @@ namespace UnicomTICManagementSystem.Views
 
         private void Delete_btn_Click(object sender, EventArgs e)
         {
-            {
-                if (User_dgv.SelectedRows.Count > 0)
-                {
-                    int id = Convert.ToInt32(User_dgv.SelectedRows[0].Cells["Id"].Value);
-                    userController.DeleteUser(id);
-                    LoadUsers();
-                }
-            }
+        //    {
+        //        if (User_dgv.SelectedRows.Count > 0)
+        //        {
+        //            int id = Convert.ToInt32(User_dgv.SelectedRows[0].Cells["Id"].Value);
+        //            userController.DeleteUser(id);
+        //            LoadUsers();
+        //        }
+        //    }
         }
 
         private void User_dgv_SelectionChanged(object sender, EventArgs e)
@@ -107,8 +108,9 @@ namespace UnicomTICManagementSystem.Views
                     var user = userController.GetUserById(selectedUserId);
                     if (user != null)
                     {
-                        name_txt.Text = user.UserName;
-                        
+                        name_txt.Text = user.Name;
+                        username_txt.Text = user.Username;
+                        role_cbx.SelectedItem = user.Role;
                         
                     }
 }

@@ -9,5 +9,6 @@ namespace UnicomTICManagementSystem.Models
     public static class Role
     {
        public  static string CurrentRole { get; set; }
+       
     }
 }

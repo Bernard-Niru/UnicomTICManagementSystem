@@ -38,10 +38,10 @@
             this.Update_btn = new System.Windows.Forms.Button();
             this.Add_btn = new System.Windows.Forms.Button();
             this.Delete_btn = new System.Windows.Forms.Button();
-            this.Search_btn = new System.Windows.Forms.Button();
             this.Student_dgv = new System.Windows.Forms.DataGridView();
-            this.Search_txt = new System.Windows.Forms.TextBox();
             this.back_btn = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.Username_txt = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.Student_dgv)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,7 +68,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(20, 132);
+            this.label3.Location = new System.Drawing.Point(20, 175);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(45, 13);
             this.label3.TabIndex = 2;
@@ -77,7 +77,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(25, 181);
+            this.label4.Location = new System.Drawing.Point(25, 219);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(40, 13);
             this.label4.TabIndex = 3;
@@ -94,15 +94,16 @@
             // 
             // address_txt
             // 
-            this.address_txt.Location = new System.Drawing.Point(96, 125);
+            this.address_txt.Location = new System.Drawing.Point(96, 175);
             this.address_txt.Name = "address_txt";
             this.address_txt.Size = new System.Drawing.Size(258, 20);
             this.address_txt.TabIndex = 5;
+            this.address_txt.TextChanged += new System.EventHandler(this.address_txt_TextChanged);
             // 
             // course_cbx
             // 
             this.course_cbx.FormattingEnabled = true;
-            this.course_cbx.Location = new System.Drawing.Point(96, 178);
+            this.course_cbx.Location = new System.Drawing.Point(96, 211);
             this.course_cbx.Name = "course_cbx";
             this.course_cbx.Size = new System.Drawing.Size(258, 21);
             this.course_cbx.TabIndex = 6;
@@ -147,20 +148,10 @@
             this.Delete_btn.UseVisualStyleBackColor = false;
             this.Delete_btn.Click += new System.EventHandler(this.Delete_btn_Click);
             // 
-            // Search_btn
-            // 
-            this.Search_btn.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.Search_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Search_btn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Search_btn.Location = new System.Drawing.Point(279, 349);
-            this.Search_btn.Name = "Search_btn";
-            this.Search_btn.Size = new System.Drawing.Size(75, 23);
-            this.Search_btn.TabIndex = 10;
-            this.Search_btn.Text = "Search";
-            this.Search_btn.UseVisualStyleBackColor = false;
-            // 
             // Student_dgv
             // 
+            this.Student_dgv.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.Student_dgv.BackgroundColor = System.Drawing.SystemColors.Control;
             this.Student_dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Student_dgv.Location = new System.Drawing.Point(396, 74);
             this.Student_dgv.Name = "Student_dgv";
@@ -169,35 +160,45 @@
             this.Student_dgv.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Student_dgv_CellContentClick);
             this.Student_dgv.SelectionChanged += new System.EventHandler(this.Student_dgv_SelectionChanged);
             // 
-            // Search_txt
-            // 
-            this.Search_txt.Location = new System.Drawing.Point(12, 352);
-            this.Search_txt.Name = "Search_txt";
-            this.Search_txt.Size = new System.Drawing.Size(245, 20);
-            this.Search_txt.TabIndex = 12;
-            this.Search_txt.TextChanged += new System.EventHandler(this.Search_txt_TextChanged);
-            // 
             // back_btn
             // 
-            this.back_btn.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.back_btn.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.back_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.back_btn.Location = new System.Drawing.Point(12, 415);
+            this.back_btn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.back_btn.Location = new System.Drawing.Point(12, 9);
             this.back_btn.Name = "back_btn";
             this.back_btn.Size = new System.Drawing.Size(75, 23);
             this.back_btn.TabIndex = 13;
-            this.back_btn.Text = "<-----";
+            this.back_btn.Text = "<----";
             this.back_btn.UseVisualStyleBackColor = false;
             this.back_btn.Click += new System.EventHandler(this.back_btn_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(8, 132);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(57, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "UserName";
+            // 
+            // Username_txt
+            // 
+            this.Username_txt.Location = new System.Drawing.Point(96, 125);
+            this.Username_txt.Name = "Username_txt";
+            this.Username_txt.Size = new System.Drawing.Size(258, 20);
+            this.Username_txt.TabIndex = 15;
+            this.Username_txt.TextChanged += new System.EventHandler(this.Username_txt_TextChanged);
             // 
             // StudentsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.Username_txt);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.back_btn);
-            this.Controls.Add(this.Search_txt);
             this.Controls.Add(this.Student_dgv);
-            this.Controls.Add(this.Search_btn);
             this.Controls.Add(this.Delete_btn);
             this.Controls.Add(this.Add_btn);
             this.Controls.Add(this.Update_btn);
@@ -229,9 +230,9 @@
         private System.Windows.Forms.Button Update_btn;
         private System.Windows.Forms.Button Add_btn;
         private System.Windows.Forms.Button Delete_btn;
-        private System.Windows.Forms.Button Search_btn;
         private System.Windows.Forms.DataGridView Student_dgv;
-        private System.Windows.Forms.TextBox Search_txt;
         private System.Windows.Forms.Button back_btn;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox Username_txt;
     }
 }

@@ -14,42 +14,44 @@ namespace UnicomTICManagementSystem.Controllers
     {
         //Getting Data From Students Table ====================================================
         public List<Student> GetAllStudents()
-{
-    var StudentList = new List<Student>();
-
-    using (var getDBconn = DBConnection.GetConnection())
-    {
-        var cmd = new SQLiteCommand(@"
-            SELECT s.Id, s.Name, s.Address, s.CourseID, s.UserID, Courses.Name AS CourseName
-            FROM Students s
-            LEFT JOIN Courses ON s.CourseID = Courses.Id
-            LEFT JOIN Users ON s.UserID = Users.Id", getDBconn);
-
-        var reader = cmd.ExecuteReader();
-        while (reader.Read())
         {
-            StudentList.Add(new Student
+            var StudentList = new List<Student>();
+
+            using (var getDBconn = DBConnection.GetConnection())
             {
-                Id = reader.GetInt32(0),
-                Name = reader.GetString(1),
-                Address = reader.GetString(2),
-                CourseID = reader.GetInt32(3),
-                UserID = reader.GetInt32(4),
-                CourseName = reader.IsDBNull(5) ? null : reader.GetString(5),
-            });
+                var cmd = new SQLiteCommand(@"
+                    SELECT s.Id, s.Name,s.Username, s.Address, s.CourseID, s.UserID, Courses.Name AS CourseName,Users.Username AS Username
+                    FROM Students s
+                    LEFT JOIN Courses ON s.CourseID = Courses.Id
+                    LEFT JOIN Users ON s.UserID = Users.Id", getDBconn);
+
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    StudentList.Add(new Student
+                    {
+                        Id = reader.GetInt32(0),
+                        Name = reader.GetString(1),
+                        Username = reader.GetString(2),
+                        Address = reader.GetString(3),
+                        CourseID = reader.GetInt32(4),
+                        UserID = reader.GetInt32(5),
+                        CourseName = reader.IsDBNull(6) ? null : reader.GetString(6),
+                    });
+                }
+            }
+            return StudentList;
         }
-    }
-    return StudentList;
-}
 
         //Adding Data To Students Table ============================================================
         public void AddStudent(Student student)
         {
             using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand(@"INSERT INTO Students (Name,Address,CourseID,UserID) 
-                                            VALUES (@Name,@Address,@CourseID,@UserID)", getDBconn);
+                var cmd = new SQLiteCommand(@"INSERT INTO Students (Name,Username,Address,CourseID,UserID) 
+                                            VALUES (@Name,@Username,@Address,@CourseID,@UserID)", getDBconn);
                 cmd.Parameters.AddWithValue("@Name", student.Name);
+                cmd.Parameters.AddWithValue("@Username",student.Username);
                 cmd.Parameters.AddWithValue("@Address", student.Address);
                 cmd.Parameters.AddWithValue("@CourseID", student.CourseID);
                 cmd.Parameters.AddWithValue("@UserID", student.UserID);
@@ -61,8 +63,9 @@ namespace UnicomTICManagementSystem.Controllers
         {
             using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand("UPDATE Students SET Name = @name, Address = @address , CourseID = @courseId WHERE Id = @id", getDBconn);
+                var cmd = new SQLiteCommand("UPDATE Students SET Name = @name, Username = @username , Address = @address , CourseID = @courseId WHERE Id = @id", getDBconn);
                 cmd.Parameters.AddWithValue("@name", student.Name);
+                cmd.Parameters.AddWithValue("@username", student.Username);
                 cmd.Parameters.AddWithValue("@address", student.Address);
                 cmd.Parameters.AddWithValue("@courseId", student.CourseID);
                 cmd.Parameters.AddWithValue("@id",student.Id);
@@ -94,8 +97,10 @@ namespace UnicomTICManagementSystem.Controllers
                         {
                             Id = reader.GetInt32(0),
                             Name = reader.GetString(1),
-                            Address = reader.GetString(2),
-                            CourseID = reader.GetInt32(3)
+                            Username = reader.GetString(2),
+                            Address = reader.GetString(3),
+                            CourseID = reader.GetInt32(4),
+                            UserID = reader.GetInt32(5)
                         };
                     }
                 }
@@ -103,9 +108,6 @@ namespace UnicomTICManagementSystem.Controllers
 
             return null;
         }
-
-
-
 
     }
 }

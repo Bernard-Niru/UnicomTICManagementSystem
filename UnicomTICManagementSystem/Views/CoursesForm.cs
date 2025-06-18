@@ -15,12 +15,14 @@ namespace UnicomTICManagementSystem.Views
     public partial class CoursesForm : Form
     {
         private CourseController courseController = new CourseController();
+        private int selectedCourseId = -1;
+
         public CoursesForm()
         {
             InitializeComponent();
             LoadCourses();
         }
-        private void LoadCourses() 
+        private void LoadCourses() // Load data from Course table to DataGridView
         {
             Courses_dgv.DataSource = null;
             Courses_dgv.DataSource = courseController.GetAllCourses();           
@@ -38,7 +40,7 @@ namespace UnicomTICManagementSystem.Views
 
         }
 
-        private void Add_btn_Click(object sender, EventArgs e)
+        private void Add_btn_Click(object sender, EventArgs e) // Adding course
         {
             Course course = new Course 
             {
@@ -60,5 +62,52 @@ namespace UnicomTICManagementSystem.Views
             mainForm.Show();
             this.Hide();
         }
+
+        private void Courses_dgv_SelectionChanged(object sender, EventArgs e)
+        {
+
+            if (Courses_dgv.SelectedRows.Count > 0)
+            {
+                var row = Courses_dgv.SelectedRows[0];
+                var CourseView = row.DataBoundItem as Course;
+
+
+                if (CourseView != null)
+                {
+                    selectedCourseId = CourseView.Id;
+
+                    var course = courseController.GetCourseById(selectedCourseId);
+                    if (course != null)
+                    {
+                        name_txt.Text = course.Name;
+
+                    }
+                }
+                else
+                {
+                    selectedCourseId = -1;
+                }
+
+            }
+        }
+
+        private void Delete_btn_Click(object sender, EventArgs e) // Deleting course
+        {
+            if (selectedCourseId == -1)
+            {
+                MessageBox.Show("Please select a course to delete");
+                return;
+            }
+
+            var confirmatiion = MessageBox.Show("Are you sure you want to delete this course?", "Confirm Delete", MessageBoxButtons.YesNo);
+            if (confirmatiion == DialogResult.Yes)
+            {
+                courseController.DeleteCourse(selectedCourseId);
+                name_txt.Clear();   
+                LoadCourses();
+                MessageBox.Show("Course Deleted Successfully");
+            }
+        }
+
     }
 }

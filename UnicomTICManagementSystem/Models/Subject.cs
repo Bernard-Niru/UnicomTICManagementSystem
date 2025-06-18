@@ -8,5 +8,10 @@ namespace UnicomTICManagementSystem.Models
 {
     internal class Subject
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int CourseID { get; set; }
+        public string CourseName { get; set; }
+
     }
 }
