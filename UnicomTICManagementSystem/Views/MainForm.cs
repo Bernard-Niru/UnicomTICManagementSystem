@@ -41,13 +41,13 @@ namespace UnicomTICManagementSystem.Views
 
         private void MainForm_Load(object sender, EventArgs e)
         {          
-            if (Role.CurrentRole == "Student")
+            if (Login.CurrentRole == "Student")
             {
                 Users_btn.Visible = false;
                 Courses_btn.Visible = false;
 
             }
-            else if (Role.CurrentRole == "Staff" || Role.CurrentRole == "Lecturer")
+            else if (Login.CurrentRole == "Staff" || Login.CurrentRole == "Lecturer")
             {
                 Users_btn.Visible = false;
             }
@@ -71,6 +71,20 @@ namespace UnicomTICManagementSystem.Views
         private void button1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Timetable_btn_Click(object sender, EventArgs e)
+        {
+            TimeTableForm timetableForm = new TimeTableForm();
+            timetableForm.Show();
+            this.Hide();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            LoginForm loginForm = new LoginForm();
+            loginForm.Show();
+            this.Hide();
         }
     }
 }

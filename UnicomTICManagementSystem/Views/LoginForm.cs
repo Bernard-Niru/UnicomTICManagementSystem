@@ -15,7 +15,7 @@ namespace UnicomTICManagementSystem
 {
     public partial class LoginForm : Form
     {
-        private UserController userController = new UserController();
+        private LoginController loginController = new LoginController();
         public LoginForm()
         {
             InitializeComponent();
@@ -35,26 +35,26 @@ namespace UnicomTICManagementSystem
             user.Username = name_txt.Text.Trim();
             user.Password = pswd_txt.Text.Trim(); 
            
-            User user1 = userController.GettingLoginInfo(user);
+            User user1 = loginController.GettingLoginInfo(user);
             if (user1.Username == user.Username && user1.Password == user.Password)
             {
                 
                 if (user1.Role == "Admin")
                 {
-                    Role.CurrentRole = "Admin";
+                    Login.CurrentRole = "Admin";
                 }
                 else if (user1.Role == "Student")       //Assigning the role to a static class
 
                 {
-                    Role.CurrentRole = "Student";
+                    Login.CurrentRole = "Student";
                 }
                 else if (user1.Role == "Lecturer")
                 {
-                    Role.CurrentRole = "Lecturer";
+                    Login.CurrentRole = "Lecturer";
                 }
                 else
                 {
-                    Role.CurrentRole = "Staff";
+                    Login.CurrentRole = "Staff";
                 }
                 MainForm mainForm = new MainForm();
                 mainForm.Show();

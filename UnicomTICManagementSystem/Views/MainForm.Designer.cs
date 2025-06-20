@@ -36,6 +36,8 @@ namespace UnicomTICManagementSystem.Views
             this.Subjects_btn = new System.Windows.Forms.Button();
             this.Rooms_btn = new System.Windows.Forms.Button();
             this.Pwsd_btn = new System.Windows.Forms.Button();
+            this.Timetable_btn = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Students_btn
@@ -90,7 +92,7 @@ namespace UnicomTICManagementSystem.Views
             // 
             // Pwsd_btn
             // 
-            this.Pwsd_btn.Location = new System.Drawing.Point(317, 340);
+            this.Pwsd_btn.Location = new System.Drawing.Point(643, 389);
             this.Pwsd_btn.Name = "Pwsd_btn";
             this.Pwsd_btn.Size = new System.Drawing.Size(103, 23);
             this.Pwsd_btn.TabIndex = 5;
@@ -98,11 +100,36 @@ namespace UnicomTICManagementSystem.Views
             this.Pwsd_btn.UseVisualStyleBackColor = true;
             this.Pwsd_btn.Click += new System.EventHandler(this.button1_Click);
             // 
+            // Timetable_btn
+            // 
+            this.Timetable_btn.Location = new System.Drawing.Point(317, 341);
+            this.Timetable_btn.Name = "Timetable_btn";
+            this.Timetable_btn.Size = new System.Drawing.Size(87, 23);
+            this.Timetable_btn.TabIndex = 6;
+            this.Timetable_btn.Text = "Time Table";
+            this.Timetable_btn.UseVisualStyleBackColor = true;
+            this.Timetable_btn.Click += new System.EventHandler(this.Timetable_btn_Click);
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.SystemColors.MenuHighlight;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.button1.Location = new System.Drawing.Point(13, 13);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "<----";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.Timetable_btn);
             this.Controls.Add(this.Pwsd_btn);
             this.Controls.Add(this.Rooms_btn);
             this.Controls.Add(this.Subjects_btn);
@@ -124,5 +151,7 @@ namespace UnicomTICManagementSystem.Views
         private System.Windows.Forms.Button Subjects_btn;
         private System.Windows.Forms.Button Rooms_btn;
         private System.Windows.Forms.Button Pwsd_btn;
+        private System.Windows.Forms.Button Timetable_btn;
+        private System.Windows.Forms.Button button1;
     }
 }

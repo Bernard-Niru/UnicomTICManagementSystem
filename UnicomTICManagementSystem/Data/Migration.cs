@@ -62,16 +62,26 @@ namespace UnicomTICManagementSystem.Data
                     (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Name TEXT NOT NULL,
+                    CourseID INTEGER,
                     SubjectID INTEGER,
-                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id)
+                    Date TEXT NOT NULL,
+                    Time TEXT NOT NULL,
+                    RoomID INTEGER,
+                    FOREIGN KEY(CourseID) REFERENCES Courses(Id),
+                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id),
+                    FOREIGN KEY (RoomID) REFERENCES Rooms(Id)
                     );
 
                     CREATE TABLE IF NOT EXISTS Marks
                     (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    CourseID INTEGER,
+                    SubjectID INTEGER,
                     StudentID INTEGER,
                     ExamID INTEGER,
                     Score INTEGER,
+                    FOREIGN KEY (CourseID) REFERENCES Courses(Id),
+                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id),
                     FOREIGN KEY (StudentID) REFERENCES Students(Id),
                     FOREIGN KEY (ExamID) REFERENCES Exams(Id)
                     );
@@ -86,10 +96,12 @@ namespace UnicomTICManagementSystem.Data
                      CREATE TABLE IF NOT EXISTS Timetables
                     (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    CourseID INTEGER,
                     SubjectID INTEGER,
                     Date TEXT NOT NULL,
                     Time TEXT NOT NULL,
                     RoomID INTEGER,
+                    FOREIGN KEY (CourseID) REFERENCES Courses(Id),
                     FOREIGN KEY (SubjectID) REFERENCES Subjects(Id),
                     FOREIGN KEY (RoomID) REFERENCES Rooms(Id)
                     );

@@ -88,22 +88,25 @@ namespace UnicomTICManagementSystem.Views
                 Role = "Student"
             };
 
-            userController.AddUser(user);
-            int? userId = userController.GetUserIDByUsername(userName); // Getting the UserID from Users table by Username
-
-            Student student = new Student
+            bool added = userController.AddUser(user);
+            if (added)                                                      // check if username exists
             {
-                Name = name,
-                Username=userName,
-                Address = address_txt.Text.Trim(),
-                CourseID = (int)course_cbx.SelectedValue,
-                UserID = (int)userId
-            };
+                User userId = userController.GetUserIDByUsername(userName); // Getting the UserID from Users table by Username
 
-            studentController.AddStudent(student);
-            LoadStudents();
-            ClearForm();
-            MessageBox.Show("Student Added Successfully");
+                Student student = new Student
+                {
+                    Name = name,
+                    Username = userName,
+                    Address = address_txt.Text.Trim(),
+                    CourseID = (int)course_cbx.SelectedValue,
+                    UserID = userId.Id
+                };
+
+                studentController.AddStudent(student);
+                LoadStudents();
+                ClearForm();
+                MessageBox.Show("Student Added Successfully");
+            }
         }
 
         private void course_cbx_SelectedIndexChanged(object sender, EventArgs e)
@@ -139,7 +142,6 @@ namespace UnicomTICManagementSystem.Views
                     if (student != null)
                     {
                         name_txt.Text = student.Name;
-                        Username_txt.Text = student.Username;
                         address_txt.Text = student.Address;
                         course_cbx.SelectedValue = student.CourseID;
                     }
@@ -165,8 +167,10 @@ namespace UnicomTICManagementSystem.Views
             if (confirmatiion == DialogResult.Yes)
             {
                 studentController.DeleteStudent(selectedStudentId);
-                int?userid = userController.GetUserIDByUsername(username);
-                userController.DeleteUser((int)userid);
+
+                var userID = studentController.GetUserID(selectedStudentId);     // Getting the UserID of the Deleted Student 
+                userController.DeleteUser(userID.UserID);
+
                 ClearForm();
                 LoadStudents();
                 MessageBox.Show("Student Deleted Successfully");
@@ -180,9 +184,8 @@ namespace UnicomTICManagementSystem.Views
         }
         private void Update_btn_Click(object sender, EventArgs e) // Updating student from both Students & Users table 
         {
-            string name = name_txt.Text.Trim();
-            string username = Username_txt.Text.Trim();
-            string address = address_txt.Text.Trim();
+            string newName = name_txt.Text.Trim();
+            string newAddress = address_txt.Text.Trim();
 
             if (selectedStudentId == -1)
             {
@@ -190,7 +193,7 @@ namespace UnicomTICManagementSystem.Views
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(address))
+            if (string.IsNullOrWhiteSpace(newName) || string.IsNullOrWhiteSpace(newAddress))
             {
                 MessageBox.Show("Please enter both Name and Address.");
                 return;
@@ -199,31 +202,27 @@ namespace UnicomTICManagementSystem.Views
             var student = new Student
             {
                 Id = selectedStudentId,
-                Name = name,
-                Username = username,
-                Address = address,
+                Name = newName,
+                Address = newAddress,
                 CourseID = (int)course_cbx.SelectedValue
 
             };
             studentController.UpdateStudent(student);
-            ClearForm() ;   
-            LoadStudents();
+            
+            
             MessageBox.Show("Student Updated Successfully");
-
-            int? userId = userController.GetUserIDByUsername(username);
-            string userpswd = userController.GetPswdByUsername(username);
+            var userID= studentController.GetUserID(selectedStudentId);
+           
             var user = new User
             {
-                Id = (int)userId,
-                Name = name_txt.Text,
-                Username = Username_txt.Text,
-                Password = userpswd,
-                Role = "Student"
+                Id = userID.UserID,
+                Name = newName,
             };
-
             userController.UpdateUser(user);
-            usersForm.LoadUsers(); 
-                      
+
+            usersForm.LoadUsers();
+            LoadStudents();
+            ClearForm();
         }
 
         private void address_txt_TextChanged(object sender, EventArgs e)

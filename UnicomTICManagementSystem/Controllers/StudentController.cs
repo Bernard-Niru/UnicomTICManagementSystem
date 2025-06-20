@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using UnicomTICManagementSystem.Data;
 using UnicomTICManagementSystem.Models;
 
@@ -12,7 +13,7 @@ namespace UnicomTICManagementSystem.Controllers
 {
     internal class StudentController
     {
-        //Getting Data From Students Table ====================================================
+        //Getting Data From Students Table =================================================================================================
         public List<Student> GetAllStudents()
         {
             var StudentList = new List<Student>();
@@ -56,6 +57,7 @@ namespace UnicomTICManagementSystem.Controllers
                 cmd.Parameters.AddWithValue("@CourseID", student.CourseID);
                 cmd.Parameters.AddWithValue("@UserID", student.UserID);
                 cmd.ExecuteNonQuery();
+
             }
         }
         //Updating Data On Students Table ===========================================================
@@ -63,9 +65,8 @@ namespace UnicomTICManagementSystem.Controllers
         {
             using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand("UPDATE Students SET Name = @name, Username = @username , Address = @address , CourseID = @courseId WHERE Id = @id", getDBconn);
+                var cmd = new SQLiteCommand("UPDATE Students SET Name = @name , Address = @address , CourseID = @courseId WHERE Id = @id", getDBconn);
                 cmd.Parameters.AddWithValue("@name", student.Name);
-                cmd.Parameters.AddWithValue("@username", student.Username);
                 cmd.Parameters.AddWithValue("@address", student.Address);
                 cmd.Parameters.AddWithValue("@courseId", student.CourseID);
                 cmd.Parameters.AddWithValue("@id",student.Id);
@@ -108,6 +109,45 @@ namespace UnicomTICManagementSystem.Controllers
 
             return null;
         }
+        public Student GetUserID(int id)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("SELECT UserID FROM Students WHERE Id = @Id", getDBconn);
+                cmd.Parameters.AddWithValue("@Id", id);
 
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Student
+                        {
+                            UserID = reader.GetInt32(0)
+                        };                      
+                    }                   
+                }
+            }
+            return null;
+        }
+        public void DeleteStudentByUserID(int userid)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("DELETE FROM Students WHERE UserID = @userid", getDBconn);
+                cmd.Parameters.AddWithValue("@userid", userid);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public void UpdateStudentByUserID(Student student) 
+        {
+            using (var getDBconn = DBConnection.GetConnection()) 
+            {
+                var cmd = new SQLiteCommand("UPDATE Students SET Name = @name  WHERE UserID = @userid", getDBconn);
+                cmd.Parameters.AddWithValue("@name",student.Name);
+                cmd.Parameters.AddWithValue("@userid",student.UserID);
+                cmd.ExecuteNonQuery();
+            }
+
+        }
     }
 }

@@ -117,29 +117,29 @@ namespace UnicomTICManagementSystem.Views
 
     
 
-    private void Update_btn_Click(object sender, EventArgs e) // Updating room
+        private void Update_btn_Click(object sender, EventArgs e) // Updating room
+        
         {
+            if (selectedRoomId == -1)
             {
-                if (selectedRoomId == -1)
-                {
-                    MessageBox.Show("Please select a Room to update.");
-                    return;
-                }
-
-                var room = new Room
-                {
-                    Id = selectedRoomId,
-                    Name = Name_txt.Text,
-                    RoomType = (string)RoomType_cbx.SelectedValue
-
-                };
-                roomController.UpdateRoom(room);
-                LoadRooms();
-                ClearForm();    
-                MessageBox.Show("Rooom updated successfully!");
-
+                MessageBox.Show("Please select a Room to update.");
+                return;
             }
+
+            var room = new Room
+            {
+                Id = selectedRoomId,
+                Name = Name_txt.Text,
+                RoomType = (string)RoomType_cbx.SelectedValue
+
+            };
+            roomController.UpdateRoom(room);
+            LoadRooms();
+            ClearForm();    
+            MessageBox.Show("Rooom updated successfully!");
+
         }
+        
 
         private void RoomType_cbx_SelectedIndexChanged(object sender, EventArgs e)
         {

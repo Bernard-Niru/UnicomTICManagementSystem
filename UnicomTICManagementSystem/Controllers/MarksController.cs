@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicomTICManagementSystem.Models
+namespace UnicomTICManagementSystem.Controllers
 {
-    public static class Role
+    internal class MarksController
     {
-       public  static string CurrentRole { get; set; }
-       
     }
 }

@@ -16,13 +16,13 @@ namespace UnicomTICManagementSystem.Controllers
         {
             var SubjectList = new List<Subject>();
 
-            using (var getDBconn = DBConnection.GetConnection()) 
+            using (var getDBconn = DBConnection.GetConnection())
             {
                 var cmd = new SQLiteCommand(@"
                     SELECT s.Id, s.Name,  s.CourseID, Courses.Name AS CourseName
                     FROM Subjects s
                     LEFT JOIN Courses ON s.CourseID = Courses.Id", getDBconn);
-                    
+
 
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -30,7 +30,7 @@ namespace UnicomTICManagementSystem.Controllers
                     SubjectList.Add(new Subject
                     {
                         Id = reader.GetInt32(0),
-                        Name = reader.GetString(1),                       
+                        Name = reader.GetString(1),
                         CourseID = reader.GetInt32(2),
                         CourseName = reader.IsDBNull(3) ? null : reader.GetString(3),
 
@@ -47,7 +47,7 @@ namespace UnicomTICManagementSystem.Controllers
             {
                 var cmd = new SQLiteCommand(@"INSERT INTO Subjects (Name,CourseID) 
                                             VALUES (@Name,@CourseID)", getDBconn);
-                cmd.Parameters.AddWithValue("@Name", subject.Name);               
+                cmd.Parameters.AddWithValue("@Name", subject.Name);
                 cmd.Parameters.AddWithValue("@CourseID", subject.CourseID);
                 cmd.ExecuteNonQuery();
             }
@@ -88,7 +88,7 @@ namespace UnicomTICManagementSystem.Controllers
 
             return null;
         }
-         //Deleting Data From Subjects Table =========================================================
+        //Deleting Data From Subjects Table =========================================================
         public void DeleteSubject(int id)
         {
             using (var getDBconn = DBConnection.GetConnection())
@@ -98,6 +98,30 @@ namespace UnicomTICManagementSystem.Controllers
                 cmd.ExecuteNonQuery();
             }
         }
+        // Getting subjects Belonging to a Course ===============================================================
+        public List<Subject> GetSubjectByCoID(int courseId)
+        {
+            var subjectListByCoID = new List<Subject>();
+            using (var conn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("SELECT Id, Name FROM Subjects WHERE CourseID = @courseId", conn);
+                cmd.Parameters.AddWithValue("@courseId", courseId);
 
+                using (var reader = cmd.ExecuteReader())
+                {
+                    
+                    while (reader.Read())
+                    {
+                        subjectListByCoID.Add(new Subject
+                         {
+                            Id=reader.GetInt32(0),
+                            Name=reader.GetString(1),
+                            
+                         });
+                    }
+                }
+            }
+            return subjectListByCoID;
+        }
     }
 }
