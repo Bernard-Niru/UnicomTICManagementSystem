@@ -54,6 +54,12 @@ namespace UnicomTICManagementSystem.Views
             Rooms_cbx.ValueMember = "Id";
             Rooms_cbx.SelectedIndex = -1;
         }
+        private void ClearForm() 
+        {
+            Courses_cbx.SelectedIndex = 1;
+            Subjects_cbx.SelectedIndex = 1;
+            Rooms_cbx.SelectedIndex = 1;
+        }
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -73,9 +79,26 @@ namespace UnicomTICManagementSystem.Views
         {
 
         }
-        private void TimeTableForm_Load(object sender, EventArgs e)
+        private void TimeTableForm_Load(object sender, EventArgs e) // Hiding buttons and others accornding to role 
         {
-
+            if (Login.CurrentRole == "Student" || Login.CurrentRole == "Staff" || Login.CurrentRole == "Lecturer")
+            {
+                Courses_cbx.Visible = false;
+                Subjects_cbx.Visible = false;
+                Rooms_cbx.Visible = false;
+                Date_dtp.Visible = false;
+                Time_dtp.Visible = false;
+                Add_btn.Visible = false;
+                Update_btn.Visible = false;
+                Delete_btn.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+                label4.Visible = false;
+                label5.Visible = false;
+                label6.Visible = false;
+                           
+            }
+            
         }
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -102,6 +125,7 @@ namespace UnicomTICManagementSystem.Views
             timeTableController.UpdateTimetable(timetable);
             LoadTimetable();
             MessageBox.Show("Timetable updated successfully!");
+            ClearForm();
 
         }
         private void button4_Click(object sender, EventArgs e) // Add
@@ -118,6 +142,7 @@ namespace UnicomTICManagementSystem.Views
             timeTableController.AddtoTimetable(timetable);
             LoadTimetable();
             MessageBox.Show(" Added Successfully");
+            ClearForm();
         }
 
         private void Timetable_dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -170,9 +195,7 @@ namespace UnicomTICManagementSystem.Views
 
         private void Back_btn_Click(object sender, EventArgs e)
         {
-            MainForm mainForm = new MainForm();
-            mainForm.Show();
-            this.Hide();
+ 
         }
 
         private void Delete_btn_Click(object sender, EventArgs e) // Delete
@@ -189,7 +212,13 @@ namespace UnicomTICManagementSystem.Views
                 timeTableController.DeleteTimetable(selectedTimetableId);
                 LoadTimetable();
                 MessageBox.Show("Row Deleted Successfully");
+                ClearForm();
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -127,11 +127,11 @@
     <Compile Include="Views\TimeTableForm.Designer.cs">
       <DependentUpon>TimeTableForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\UpdateForm.cs">
+    <Compile Include="Views\ProfileForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\UpdateForm.Designer.cs">
-      <DependentUpon>UpdateForm.cs</DependentUpon>
+    <Compile Include="Views\ProfileForm.Designer.cs">
+      <DependentUpon>ProfileForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\UsersForm.cs">
       <SubType>Form</SubType>
@@ -157,6 +157,9 @@
     <EmbeddedResource Include="Views\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\MarksForm.resx">
+      <DependentUpon>MarksForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\RoomsForm.resx">
       <DependentUpon>RoomsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -171,6 +174,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TimeTableForm.resx">
       <DependentUpon>TimeTableForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ProfileForm.resx">
+      <DependentUpon>ProfileForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\UsersForm.resx">
       <DependentUpon>UsersForm.cs</DependentUpon>

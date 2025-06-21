@@ -92,11 +92,8 @@ namespace UnicomTICManagementSystem.Views
 
         private void Back_btn_Click(object sender, EventArgs e)
         {
-            MainForm mainForm = new MainForm();
-            mainForm.Show();
-            this.Hide();
-        }
 
+        }
         private void Delete_btn_Click(object sender, EventArgs e) // Deleting room
         {
             if (selectedRoomId == -1)

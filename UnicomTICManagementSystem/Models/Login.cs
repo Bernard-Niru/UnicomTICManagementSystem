@@ -12,6 +12,7 @@ namespace UnicomTICManagementSystem.Models
        public static string CurrentUserName { get; set; }
        public static string CurrentPassword { get; set; }
        public static string CurrentCourse { get; set; }
+       public static string CurrentName { get; set; }
        
     }
 }

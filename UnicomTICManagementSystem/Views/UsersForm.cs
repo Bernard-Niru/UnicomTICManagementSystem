@@ -64,8 +64,9 @@ namespace UnicomTICManagementSystem.Views
             {
                 LoadUsers();
                 MessageBox.Show("User Added Successfully");
+                ClearForm();
             }
-            ClearForm();
+            
         }
 
 
@@ -81,9 +82,7 @@ namespace UnicomTICManagementSystem.Views
 
         private void button5_Click(object sender, EventArgs e)
         {
-            MainForm mainForm = new MainForm();
-            mainForm.Show();
-            this.Hide();
+          
         }
 
         private void Update_btn_Click(object sender, EventArgs e)

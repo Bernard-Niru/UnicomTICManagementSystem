@@ -21,14 +21,11 @@ namespace UnicomTICManagementSystem
             InitializeComponent();
         }
 
-
         private void LoginForm_Load(object sender, EventArgs e)
         {
 
         }
-        
-        
-
+              
         private void Register_btn_Click(object sender, EventArgs e) // Login
         {         
             User user = new User();
@@ -38,7 +35,10 @@ namespace UnicomTICManagementSystem
             User user1 = loginController.GettingLoginInfo(user);
             if (user1.Username == user.Username && user1.Password == user.Password)
             {
-                
+                Login.CurrentPassword = user1.Password;
+                Login.CurrentUserName = user1.Username;
+                Login.CurrentName = user1.Name; 
+
                 if (user1.Role == "Admin")
                 {
                     Login.CurrentRole = "Admin";

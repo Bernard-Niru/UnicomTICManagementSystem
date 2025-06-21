@@ -18,54 +18,59 @@ namespace UnicomTICManagementSystem.Views
             InitializeComponent();          
         }
 
+        public void LoadForm(object formObj)
+        {
+            if (this.Mainpanel.Controls.Count > 0)
+            {
+                this.Mainpanel.Controls.RemoveAt(0);
+            }
+
+            Form form = formObj as Form;
+            form.TopLevel = false;
+            form.Dock = DockStyle.Fill;
+            this.Mainpanel.Controls.Add(form);
+            this.Mainpanel.Tag = form;
+            form.Show();
+        }
         private void Students_btn_Click(object sender, EventArgs e)
         {
-            StudentsForm studentsForm = new StudentsForm();
-            studentsForm.Show();
-            this.Hide();
+            LoadForm(new StudentsForm());
+           
         }
 
         private void Courses_btn_Click(object sender, EventArgs e)
         {
-            CoursesForm coursesForm = new CoursesForm();
-            coursesForm.Show();
-            this.Hide();
+           LoadForm(new CoursesForm());
         }
 
         private void Users_btn_Click(object sender, EventArgs e)
         {               
-             UsersForm usersForm = new UsersForm();
-             usersForm.Show();
-             this.Hide();               
+            LoadForm( new UsersForm());
+                          
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e) // Hiding buttons and others accornding to role 
         {          
-            if (Login.CurrentRole == "Student")
+            if (Login.CurrentRole == "Student" || Login.CurrentRole == "Staff" || Login.CurrentRole == "Lecturer")
             {
                 Users_btn.Visible = false;
                 Courses_btn.Visible = false;
+                Subjects_btn.Visible = false;
+                Students_btn.Visible = false ;
+                Rooms_btn.Visible = false ;
 
-            }
-            else if (Login.CurrentRole == "Staff" || Login.CurrentRole == "Lecturer")
-            {
-                Users_btn.Visible = false;
-            }
-
+            }           
         }
 
         private void Subjects_btn_Click(object sender, EventArgs e)
         {
-            SubjectsForm subjectsForm = new SubjectsForm();
-            subjectsForm.Show();
-            this.Hide();
+            LoadForm( new SubjectsForm());
+
         }
 
         private void Rooms_btn_Click(object sender, EventArgs e)
         {
-            RoomsForm roomsForm = new RoomsForm();
-            roomsForm.Show();
-            this.Hide();
+            LoadForm( new RoomsForm());
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -75,16 +80,39 @@ namespace UnicomTICManagementSystem.Views
 
         private void Timetable_btn_Click(object sender, EventArgs e)
         {
-            TimeTableForm timetableForm = new TimeTableForm();
-            timetableForm.Show();
-            this.Hide();
+            LoadForm( new TimeTableForm());
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
             LoginForm loginForm = new LoginForm();
             loginForm.Show();
-            this.Hide();
+            this.Close();
+        }
+
+        private void Sidepanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Exams_btn_Click(object sender, EventArgs e)
+        {
+            LoadForm(new ExamsForm());
+        }
+
+        private void Marks_btn_Click(object sender, EventArgs e)
+        {
+            LoadForm( new MarksForm());
+        }
+
+        private void Mainpanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            LoadForm(new ProfileForm());
         }
     }
 }

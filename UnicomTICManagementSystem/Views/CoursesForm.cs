@@ -49,6 +49,7 @@ namespace UnicomTICManagementSystem.Views
             courseController.AddCourses(course);
             LoadCourses();
             name_txt.Clear();
+            MessageBox.Show("Course Added Successfully");
         }
 
         private void Courses_dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -58,9 +59,7 @@ namespace UnicomTICManagementSystem.Views
 
         private void back_btn_Click(object sender, EventArgs e)
         {
-           MainForm mainForm = new MainForm();
-            mainForm.Show();
-            this.Hide();
+          
         }
 
         private void Courses_dgv_SelectionChanged(object sender, EventArgs e)

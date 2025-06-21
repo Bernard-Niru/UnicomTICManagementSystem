@@ -121,37 +121,12 @@ namespace UnicomTICManagementSystem.Views
 
         private void back_btn_Click(object sender, EventArgs e)
         {
-            MainForm mainForm = new MainForm();
-            mainForm.Show();
-            this.Hide();
+          
         }
 
         private void Student_dgv_SelectionChanged(object sender, EventArgs e)
         {
 
-            if (Student_dgv.SelectedRows.Count > 0)
-            {
-                var row = Student_dgv.SelectedRows[0];
-                var studentView = row.DataBoundItem as Student;
-
-                if (studentView != null)
-                {
-                    selectedStudentId = studentView.Id;
-
-                    var student = studentController.GetStudentById(selectedStudentId);
-                    if (student != null)
-                    {
-                        name_txt.Text = student.Name;
-                        address_txt.Text = student.Address;
-                        course_cbx.SelectedValue = student.CourseID;
-                    }
-                }
-            }
-            else
-            {
-
-                selectedStudentId = -1;
-            }
         }
 
         private void Delete_btn_Click(object sender, EventArgs e) // Deleting Student from Students & Users Table
@@ -166,14 +141,19 @@ namespace UnicomTICManagementSystem.Views
             var confirmatiion = MessageBox.Show("Are you sure you want to delete this student?", "Confirm Delete", MessageBoxButtons.YesNo);
             if (confirmatiion == DialogResult.Yes)
             {
+                var userID = studentController.GetUserID(selectedStudentId);     // Getting the UserID of the Deleted Student 
+
                 studentController.DeleteStudent(selectedStudentId);
 
-                var userID = studentController.GetUserID(selectedStudentId);     // Getting the UserID of the Deleted Student 
                 userController.DeleteUser(userID.UserID);
-
-                ClearForm();
+              
                 LoadStudents();
                 MessageBox.Show("Student Deleted Successfully");
+
+                
+                ClearForm(); //'Object reference not set to an instance of an object userID was null.
+
+
             }
         }
 
@@ -233,6 +213,39 @@ namespace UnicomTICManagementSystem.Views
         private void Username_txt_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Student_dgv_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void Student_dgv_SelectionChanged_1(object sender, EventArgs e)
+        {
+
+            if (Student_dgv.SelectedRows.Count > 0)
+            {
+                var row = Student_dgv.SelectedRows[0];
+                var studentView = row.DataBoundItem as Student;
+
+                if (studentView != null)
+                {
+                    selectedStudentId = studentView.Id;
+
+                    var student = studentController.GetStudentById(selectedStudentId);
+                    if (student != null)
+                    {
+                        name_txt.Text = student.Name;
+                        address_txt.Text = student.Address;
+                        course_cbx.SelectedValue = student.CourseID;
+                    }
+                }
+            }
+            else
+            {
+
+                selectedStudentId = -1;
+            }
         }
     }
 }

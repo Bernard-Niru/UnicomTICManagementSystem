@@ -64,7 +64,7 @@ namespace UnicomTICManagementSystem.Controllers
                 cmd.ExecuteNonQuery();
             }
         }
-        //Geeting Data by ID ==============================================================================
+        //Getting Data by ID ==============================================================================
         public Timetable GetTimetableById(int id)
         {
             using (var getDBconn = DBConnection.GetConnection())
