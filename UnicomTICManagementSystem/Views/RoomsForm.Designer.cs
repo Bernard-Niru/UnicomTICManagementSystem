@@ -123,6 +123,7 @@
             // 
             // RoomType_cbx
             // 
+            this.RoomType_cbx.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.RoomType_cbx.FormattingEnabled = true;
             this.RoomType_cbx.Location = new System.Drawing.Point(493, 373);
             this.RoomType_cbx.Name = "RoomType_cbx";

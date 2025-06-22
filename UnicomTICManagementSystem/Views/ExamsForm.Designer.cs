@@ -84,6 +84,7 @@
             // 
             // Subjects_cbx
             // 
+            this.Subjects_cbx.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Subjects_cbx.FormattingEnabled = true;
             this.Subjects_cbx.Location = new System.Drawing.Point(98, 400);
             this.Subjects_cbx.Name = "Subjects_cbx";
@@ -92,6 +93,7 @@
             // 
             // Courses_cbx
             // 
+            this.Courses_cbx.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Courses_cbx.FormattingEnabled = true;
             this.Courses_cbx.Location = new System.Drawing.Point(87, 324);
             this.Courses_cbx.Name = "Courses_cbx";
@@ -218,6 +220,7 @@
             // 
             // Rooms_cbx
             // 
+            this.Rooms_cbx.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Rooms_cbx.FormattingEnabled = true;
             this.Rooms_cbx.Location = new System.Drawing.Point(468, 400);
             this.Rooms_cbx.Name = "Rooms_cbx";

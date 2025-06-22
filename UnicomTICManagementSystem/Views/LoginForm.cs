@@ -16,6 +16,9 @@ namespace UnicomTICManagementSystem
     public partial class LoginForm : Form
     {
         private LoginController loginController = new LoginController();
+        private StudentController studentController = new StudentController();
+        private CourseController courseController = new CourseController();
+
         public LoginForm()
         {
             InitializeComponent();
@@ -24,8 +27,7 @@ namespace UnicomTICManagementSystem
         private void LoginForm_Load(object sender, EventArgs e)
         {
 
-        }
-              
+        }            
         private void Register_btn_Click(object sender, EventArgs e) // Login
         {         
             User user = new User();
@@ -43,10 +45,10 @@ namespace UnicomTICManagementSystem
                 {
                     Login.CurrentRole = "Admin";
                 }
-                else if (user1.Role == "Student")       //Assigning the role to a static class
+                else if (user1.Role == "Staff")       //Assigning the role to a static class
 
                 {
-                    Login.CurrentRole = "Student";
+                    Login.CurrentRole = "Staff";
                 }
                 else if (user1.Role == "Lecturer")
                 {
@@ -54,7 +56,13 @@ namespace UnicomTICManagementSystem
                 }
                 else
                 {
-                    Login.CurrentRole = "Staff";
+                    Login.CurrentRole = "Student";
+
+                    var courseid = studentController.GetCIDByUsername(user1.Username);
+                    var course = courseController.GetCourseById(courseid.CourseID);
+
+                    Login.CurrentCourse = course.Name;
+
                 }
                 MainForm mainForm = new MainForm();
                 mainForm.Show();

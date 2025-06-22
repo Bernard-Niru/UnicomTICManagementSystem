@@ -45,8 +45,8 @@ namespace UnicomTICManagementSystem.Data
                     Address TEXT NOT NULL,
                     CourseID INTEGER,
                     UserID INTEGER,
-                    FOREIGN KEY(Username) REFERENCES Users(Username)
-                    FOREIGN KEY (CourseID) REFERENCES Courses(Id)
+                    FOREIGN KEY(Username) REFERENCES Users(Username)  ON UPDATE CASCADE,
+                    FOREIGN KEY (CourseID) REFERENCES Courses(Id),
                     FOREIGN KEY(UserID) REFERENCES Users(Id)
                     );
 

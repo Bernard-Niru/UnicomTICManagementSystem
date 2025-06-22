@@ -62,6 +62,7 @@
             // 
             // course_cbx
             // 
+            this.course_cbx.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.course_cbx.FormattingEnabled = true;
             this.course_cbx.Location = new System.Drawing.Point(480, 359);
             this.course_cbx.Name = "course_cbx";

@@ -8,12 +8,13 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using UnicomTICManagementSystem.Data;
 using UnicomTICManagementSystem.Models;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace UnicomTICManagementSystem.Controllers
 {
     internal class UserController
     {
-        
+
         //Getting Data From Users Table =================================================
         public List<User> GetAllUsers()
         {
@@ -64,9 +65,9 @@ namespace UnicomTICManagementSystem.Controllers
                     }
                     else // for any other errors
                     {
-                        MessageBox.Show( ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    return false; 
+                    return false;
                 }
             }
         }
@@ -92,7 +93,7 @@ namespace UnicomTICManagementSystem.Controllers
                 cmd.ExecuteNonQuery();
             }
         }
-        
+
         //Getting User by UserID =================================================================
         public User GetUserById(int id)
         {
@@ -120,28 +121,68 @@ namespace UnicomTICManagementSystem.Controllers
             return null;
         }
         //To Get UserID From Users Table by Username ============================================================
-        public User  GetUserIDByUsername(string username) 
+        public User GetUserIDByUsername(string username)
         {
-            using (var getDBconn = DBConnection.GetConnection()) 
+            using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand("SELECT Id FROM Users WHERE Username = @username",getDBconn);
+                var cmd = new SQLiteCommand("SELECT Id FROM Users WHERE Username = @username", getDBconn);
                 cmd.Parameters.AddWithValue("@username", username);
 
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        return new User 
+                        return new User
                         {
                             Id = reader.GetInt32(0),
                         };
                     }
 
                 }
-                 
+
             }
             return null;
-        }      
+        }
+        // Updating username by users ===================================================================================== 
+        public bool UpdateUsername(int id, string username)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("UPDATE Users SET Username = @username WHERE Id = @id", getDBconn);
+                cmd.Parameters.AddWithValue("@username", username);
+                cmd.Parameters.AddWithValue("@id", id);
 
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
+                catch (SQLiteException ex) // check if username exists
+                {
+                    if (ex.ResultCode == SQLiteErrorCode.Constraint && ex.Message.Contains("UNIQUE"))
+                    {
+                        MessageBox.Show("Username already exists.Try a different one.", "Duplicate Username", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                    else // for any other errors
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    return false;
+                }
+            }
+        }
+        public void UpdatePassword(int id, string password)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("UPDATE Users SET Password = @password WHERE Id = @id", getDBconn);
+                cmd.Parameters.AddWithValue("@password", password);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+
+            }
+
+
+        }
     }
 }

@@ -121,5 +121,30 @@ namespace UnicomTICManagementSystem.Controllers
                 cmd.ExecuteNonQuery();
             }
         }
+        // Getting Exams Belonging to a Subject ===============================================================
+        public List<Exam> GetExamBySID(int subjectId)
+        {
+            var examListBySID = new List<Exam>();
+            using (var conn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("SELECT Id, Name FROM Exams WHERE SubjectID = @subjectId", conn);
+                cmd.Parameters.AddWithValue("@subjectId", subjectId);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        examListBySID.Add(new Exam
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+
+                        });
+                    }
+                }
+            }
+            return examListBySID;
+        }
     }
 }

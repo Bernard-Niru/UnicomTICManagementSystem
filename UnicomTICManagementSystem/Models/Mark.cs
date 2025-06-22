@@ -19,22 +19,8 @@ namespace UnicomTICManagementSystem.Models
         public int StudentId { get; set; }
         public string StudentName { get; set; }
         public string Username { get; set; }
-        private int Marks;
-        public int Score
-        {
-            get { return Marks; }
-            set
-            {
-                if (value >= 0 && value <= 100)
-                {
-                    Marks = value;
-                }
-                else
-                {
-                    MessageBox.Show("Score must be between 0 and 100.", "Invalid Score", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
+        public int Score { get; set; }
+        
 
 
     }

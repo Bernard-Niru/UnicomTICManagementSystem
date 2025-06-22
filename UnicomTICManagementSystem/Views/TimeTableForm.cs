@@ -29,7 +29,7 @@ namespace UnicomTICManagementSystem.Views
             LoadCourses();
             LoadRooms();
         }
-        private void LoadTimetable() // Load data from Students table to DataGridView
+        private void LoadTimetable() // Load data from Timetable table to DataGridView
         {
             Timetable_dgv.DataSource = null;
             Timetable_dgv.DataSource = timeTableController.GetTimetable();

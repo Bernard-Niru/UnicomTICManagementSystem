@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using UnicomTICManagementSystem.Data;
 using UnicomTICManagementSystem.Models;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace UnicomTICManagementSystem.Controllers
 {
@@ -149,5 +150,49 @@ namespace UnicomTICManagementSystem.Controllers
             }
 
         }
+        public List<Student> GetUsernameByName(string name)
+        {
+            var UsernameList = new List<Student>();
+
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+              
+                var cmd = new SQLiteCommand("SELECT Id, Username FROM Students WHERE Name = @name COLLATE NOCASE", getDBconn);
+                cmd.Parameters.AddWithValue("@name", name);
+
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    UsernameList.Add(new Student
+                    {
+                        Id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                        Username = reader.IsDBNull(1) ? null : reader.GetString(1)
+                    });
+                }
+            }
+
+            return UsernameList;
+        }
+        public Student GetCIDByUsername(string username) 
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("SELECT CourseID FROM Students WHERE Username = @username", getDBconn);
+                cmd.Parameters.AddWithValue("@username", username);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Student
+                        {
+                            CourseID = reader.GetInt32(0)
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+        
     }
 }
