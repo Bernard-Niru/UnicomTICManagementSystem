@@ -42,6 +42,11 @@ namespace UnicomTICManagementSystem.Views
 
         private void Add_btn_Click(object sender, EventArgs e) // Adding course
         {
+            if (string.IsNullOrWhiteSpace(name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter course Name.");
+                return;
+            }
             Course course = new Course 
             {
                 Name = name_txt.Text.Trim(),
@@ -92,21 +97,49 @@ namespace UnicomTICManagementSystem.Views
 
         private void Delete_btn_Click(object sender, EventArgs e) // Deleting course
         {
+            //if (selectedCourseId == -1)
+            //{
+            //    MessageBox.Show("Please select a course to delete");
+            //    return;
+            //}
+
+            //var confirmatiion = MessageBox.Show("Are you sure you want to delete this course?", "Confirm Delete", MessageBoxButtons.YesNo);
+            //if (confirmatiion == DialogResult.Yes)
+            //{
+            //    courseController.DeleteCourse(selectedCourseId);
+            //    name_txt.Clear();   
+            //    LoadCourses();
+            //    MessageBox.Show("Course Deleted Successfully");
+            //}
+        }
+
+        private void Update_btn_Click(object sender, EventArgs e) // updating Course
+        {
+
             if (selectedCourseId == -1)
             {
-                MessageBox.Show("Please select a course to delete");
+                MessageBox.Show("Please select a course to update.");
                 return;
             }
 
-            var confirmatiion = MessageBox.Show("Are you sure you want to delete this course?", "Confirm Delete", MessageBoxButtons.YesNo);
-            if (confirmatiion == DialogResult.Yes)
+            if (string.IsNullOrWhiteSpace(name_txt.Text.Trim()))
             {
-                courseController.DeleteCourse(selectedCourseId);
-                name_txt.Clear();   
-                LoadCourses();
-                MessageBox.Show("Course Deleted Successfully");
+                MessageBox.Show("Please enter course name.");
+                return;
             }
-        }
+            var course = new Course
+            {
+                Id = selectedCourseId,
+                Name = name_txt.Text,
 
+            };
+            courseController.UpdateCourse(course);
+            name_txt.Clear() ;
+            LoadCourses();
+            MessageBox.Show("Course Upadted Successfully!");
+
+            
+
+        }
     }
 }

@@ -90,6 +90,11 @@ namespace UnicomTICManagementSystem.Views
 
         private void Ok_UN_btn_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Uname_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter a new Username.");
+                return;
+            }
             string username = Uname_txt.Text.Trim();
             var userid = userController.GetUserIDByUsername(Login.CurrentUserName);
             bool updated = userController.UpdateUsername(userid.Id,username);
@@ -106,6 +111,11 @@ namespace UnicomTICManagementSystem.Views
 
         private void Ok_Pw_btn_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(Pswd_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter a new password.");
+                return;
+            }
             string password = Pswd_txt.Text.Trim();
             var userid = userController.GetUserIDByUsername(Login.CurrentUserName);
             userController.UpdatePassword(userid.Id,password);
@@ -116,6 +126,11 @@ namespace UnicomTICManagementSystem.Views
         }
 
         private void Name_lbl_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Uname_txt_TextChanged(object sender, EventArgs e)
         {
 
         }

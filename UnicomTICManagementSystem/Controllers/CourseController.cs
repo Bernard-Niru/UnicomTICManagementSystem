@@ -65,8 +65,8 @@ namespace UnicomTICManagementSystem.Controllers
 
             return null;
         }
-
-        //Deleting Data From Subjects Table =========================================================
+       
+        //Deleting Data From Courses Table ===================================================================
         public void DeleteCourse(int id)
         { 
             using (var getDBconn = DBConnection.GetConnection())
@@ -76,7 +76,17 @@ namespace UnicomTICManagementSystem.Controllers
                 cmd.ExecuteNonQuery();
             }
         }
-        
+        //Updating Data From Courses Table ===================================================================
+        public void UpdateCourse(Course course)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("UPDATE Courses SET Name = @name WHERE Id = @id", getDBconn);
+                cmd.Parameters.AddWithValue("@name", course.Name);
+                cmd.Parameters.AddWithValue("@id", course.Id);
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
        
 }

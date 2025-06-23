@@ -16,6 +16,7 @@ namespace UnicomTICManagementSystem.Views
     {
         private StudentController studentController = new StudentController();
         private UserController userController = new UserController();
+        private MarksController marksController = new MarksController();
         private int selectedUserId = -1;
 
         public UsersForm()
@@ -47,28 +48,62 @@ namespace UnicomTICManagementSystem.Views
             role_cbx.DataSource = new List<string> { "Admin", "Lecturer", "Staff"};
             role_cbx.SelectedIndex = -1;
         }
+        private bool ShowMessageAdd() // Return true if all fields are valid
+        {
+            if (string.IsNullOrWhiteSpace(name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Name.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(username_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Username.");
+                return false;
+            }
+            if (role_cbx.SelectedIndex == -1 || role_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a Role.");
+                return false;
+            }           
+            return true;
+        }
+        private bool ShowMessageUpdate() // Return true if all fields are valid
+        {
+            if (string.IsNullOrWhiteSpace(name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Name.");
+                return false;
+            }
+            if (role_cbx.SelectedIndex == -1 || role_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a Role.");
+                return false;
+            }
+            return true;
+        }
 
         private void Add_btn_Click(object sender, EventArgs e)
         {
-            User user = new User
+            if (ShowMessageAdd()) 
             {
-                Name = name_txt.Text.Trim(),
-                Username = username_txt.Text.Trim(),
-                Password = "12345",
-                Role = (string)role_cbx.SelectedValue
-            };
+                User user = new User
+                {
+                    Name = name_txt.Text.Trim(),
+                    Username = username_txt.Text.Trim(),
+                    Password = "12345",
+                    Role = (string)role_cbx.SelectedValue
+                };
 
-            bool added = userController.AddUser(user);
+                bool added = userController.AddUser(user);
 
-            if (added)
-            {
-                LoadUsers();
-                MessageBox.Show("User Added Successfully");
-                ClearForm();
-            }
-            
+                if (added)
+                {
+                    LoadUsers();
+                    MessageBox.Show("User Added Successfully");
+                    ClearForm();
+                }
+            }            
         }
-
 
         private void role_cbx_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -95,36 +130,34 @@ namespace UnicomTICManagementSystem.Views
                 MessageBox.Show("Please select a user to update.");
                 return;
             }
-
-            if (string.IsNullOrWhiteSpace(newName) || string.IsNullOrWhiteSpace(newRole))
+            if (ShowMessageUpdate())
             {
-                MessageBox.Show("Please enter both Name and Role.");
-                return;
-            }
-
-            var user = new User
-            {
-                Id = selectedUserId,
-                Name = newName,
-                Role = (string)role_cbx.SelectedValue
-
-            };
-            userController.UpdateUser(user);
-            MessageBox.Show("User updated successfully");
-
-            string role = Convert.ToString(User_dgv.SelectedRows[0].Cells["Role"].Value);
-            if (role == "Student")                                                         // If role is "Student" Update user on Students Table also
-            {
-                Student student = new Student 
+                var user = new User
                 {
                     Id = selectedUserId,
                     Name = newName,
+                    Role = (string)role_cbx.SelectedValue
+
                 };
-                studentController.UpdateStudentByUserID(student);
+                userController.UpdateUser(user);
+                MessageBox.Show("User updated successfully");
+
+                string role = Convert.ToString(User_dgv.SelectedRows[0].Cells["Role"].Value);
+                if (role == "Student")                                                         // If role is "Student" Update user on Students Table also
+                {
+                    Student student = new Student
+                    {
+                        Id = selectedUserId,
+                        Name = newName,
+                    };
+                    studentController.UpdateStudentByUserID(student);
+                }
+
+                LoadUsers();
+                ClearForm();
             }
 
-            LoadUsers();
-            ClearForm();
+          
         }
 
         private void Delete_btn_Click(object sender, EventArgs e) // Deleting User
@@ -143,6 +176,7 @@ namespace UnicomTICManagementSystem.Views
                 if (role == "Student")
                 {
                     studentController.DeleteStudentByUserID(userid);                   // If Role is "Student" delete the user from Students table also
+                    marksController.DeleteMarksByUserId(userid);
                 }
                 userController.DeleteUser(userid);
                 ClearForm();

@@ -18,6 +18,7 @@ namespace UnicomTICManagementSystem.Views
         private CourseController courseController = new CourseController();
         private SubjectController subjectController = new SubjectController();
         private RoomController roomController = new RoomController();
+        private MarksController MarksController = new MarksController();
         private int selectedExamId = -1;
         public ExamsForm()
         {
@@ -28,12 +29,24 @@ namespace UnicomTICManagementSystem.Views
         }
         private void LoadExams() // Load data from Students table to DataGridView
         {
-            Exams_dgv.DataSource = null;
-            Exams_dgv.DataSource = examController.GetAllExams();
-            Exams_dgv.Columns["CourseID"].Visible = false;
-            Exams_dgv.Columns["SubjectID"].Visible = false;
-            Exams_dgv.Columns["RoomID"].Visible = false;
-            Exams_dgv.ClearSelection();
+            if (Login.CurrentRole == "Student")
+            {
+                Exams_dgv.DataSource = null;
+                Exams_dgv.DataSource = examController.GetExamsByCourseName(Login.CurrentCourse);
+                Exams_dgv.Columns["CourseID"].Visible = false;
+                Exams_dgv.Columns["SubjectID"].Visible = false;
+                Exams_dgv.Columns["RoomID"].Visible = false;
+                Exams_dgv.ClearSelection();
+            }
+            else
+            {
+                Exams_dgv.DataSource = null;
+                Exams_dgv.DataSource = examController.GetAllExams();
+                Exams_dgv.Columns["CourseID"].Visible = false;
+                Exams_dgv.Columns["SubjectID"].Visible = false;
+                Exams_dgv.Columns["RoomID"].Visible = false;
+                Exams_dgv.ClearSelection();
+            }
         }
         private void LoadCourses() // Load course to ComboBox
         {
@@ -54,9 +67,35 @@ namespace UnicomTICManagementSystem.Views
         private void ClearForm()
         {
             Name_txt.Clear();
-            Courses_cbx.SelectedIndex = 1;
-            Subjects_cbx.SelectedIndex = 1;
-            Rooms_cbx.SelectedIndex = 1;
+            Courses_cbx.SelectedIndex = -1;
+            Subjects_cbx.SelectedIndex =- 1;
+            Rooms_cbx.SelectedIndex =- 1;
+        }
+        private bool ShowMessage() // Return true if all fields are valid
+        {
+            if (Courses_cbx.SelectedIndex == -1 || Courses_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a course.");
+                return false;
+            }          
+            if (Subjects_cbx.SelectedIndex == -1 || Subjects_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a subject.");
+                return false;
+            }
+            if (Rooms_cbx.SelectedIndex == -1 || Rooms_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a room.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(Name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Exam Name.");
+                return false;
+            }
+
+            return true; 
         }
 
 
@@ -80,11 +119,32 @@ namespace UnicomTICManagementSystem.Views
                 Subjects_cbx.DataSource = subjects;
                 Subjects_cbx.DisplayMember = "Name";
                 Subjects_cbx.ValueMember = "Id";
+                Subjects_cbx.SelectedIndex = -1;
             }
         }
 
         private void ExamsForm_Load(object sender, EventArgs e)
         {
+            if (Login.CurrentRole == "Student")
+            {
+                Courses_cbx.Visible = false;
+                Subjects_cbx.Visible = false;
+                Rooms_cbx.Visible = false;
+                Date_dtp.Visible = false;
+                Time_dtp.Visible = false;
+                Name_txt.Visible = false;
+                Add_btn.Visible = false;
+                Update_btn.Visible = false;
+                Delete_btn.Visible = false;
+                label1.Visible = false;
+                label3.Visible = false;
+                label4.Visible = false;
+                label5.Visible = false;
+                label6.Visible = false;
+                label7.Visible = false;
+              
+
+            }
 
         }
 
@@ -120,6 +180,7 @@ namespace UnicomTICManagementSystem.Views
             if (confirmatiion == DialogResult.Yes)
             {
                 examController.DeleteExam(selectedExamId);
+                MarksController.DeleteMarksByExamId(selectedExamId);
                 LoadExams();
                 MessageBox.Show("Exam Deleted Successfully");
                 ClearForm();
@@ -134,41 +195,48 @@ namespace UnicomTICManagementSystem.Views
                 return;
             }
 
-            var exam = new Exam
+            if (ShowMessage()) 
             {
-                Name = Name_txt.Text,
-                Id = selectedExamId,
-                CourseId = (int)Courses_cbx.SelectedValue,
-                SubjectId = (int)Subjects_cbx.SelectedValue,
-                Date = Date_dtp.Text,
-                Time = Time_dtp.Text,
-                RoomId = (int)Rooms_cbx.SelectedValue
+                var exam = new Exam
+                {
+                    Name = Name_txt.Text,
+                    Id = selectedExamId,
+                    CourseId = (int)Courses_cbx.SelectedValue,
+                    SubjectId = (int)Subjects_cbx.SelectedValue,
+                    Date = Date_dtp.Text,
+                    Time = Time_dtp.Text,
+                    RoomId = (int)Rooms_cbx.SelectedValue
 
-            };
-            examController.UpdateExam(exam);
-            LoadExams();
-            MessageBox.Show("Exam updated successfully!");
-            ClearForm();
+                };
+                examController.UpdateExam(exam);
+                LoadExams();
+                MessageBox.Show("Exam updated successfully!");
+                ClearForm();
+            }
+
+            
         }
 
         private void Add_btn_Click(object sender, EventArgs e)
         {
-            Exam exam = new Exam
-            {
-                Name = Name_txt.Text.Trim(),
-                CourseId = (int)Courses_cbx.SelectedValue,
-                SubjectId = (int)Subjects_cbx.SelectedValue,
-                Date = Date_dtp.Text,
-                Time = Time_dtp.Text,
-                RoomId = (int)Rooms_cbx.SelectedValue,
-            };
+           if (ShowMessage()) 
+           {
+                Exam exam = new Exam
+                {
+                    Name = Name_txt.Text.Trim(),
+                    CourseId = (int)Courses_cbx.SelectedValue,
+                    SubjectId = (int)Subjects_cbx.SelectedValue,
+                    Date = Date_dtp.Text,
+                    Time = Time_dtp.Text,
+                    RoomId = (int)Rooms_cbx.SelectedValue,
+                };
 
-            examController.AddExam(exam);
-            LoadExams();
-            MessageBox.Show("Exam Added Successfully");
-            ClearForm();
+                examController.AddExam(exam);
+                LoadExams();
+                MessageBox.Show("Exam Added Successfully");
+                ClearForm();
+            }           
         }
-
         private void Exams_dgv_SelectionChanged(object sender, EventArgs e)
         {
 

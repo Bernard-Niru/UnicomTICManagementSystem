@@ -19,6 +19,7 @@ namespace UnicomTICManagementSystem.Views
         private SubjectController subjectController = new SubjectController();
         private ExamController examController = new ExamController();
         private StudentController studentController = new StudentController();
+        private UserController userController = new UserController();   
         private int selectedMarksId = -1;
         public MarksForm()
         {
@@ -28,13 +29,28 @@ namespace UnicomTICManagementSystem.Views
         }
         private void LoadMarks() // Load data from Marks table to DataGridView
         {
-            Marks_dgv.DataSource = null;
-            Marks_dgv.DataSource = marksController.GetAllMarks();
-            Marks_dgv.Columns["CourseID"].Visible = false;
-            Marks_dgv.Columns["SubjectID"].Visible = false;
-            Marks_dgv.Columns["StudentID"].Visible = false;
-            Marks_dgv.Columns["ExamID"].Visible = false;
-            Marks_dgv.ClearSelection();
+            if (Login.CurrentRole == "Student")                                  // loading the marks of the student who logged in
+            {
+                Marks_dgv.DataSource = null;
+                Marks_dgv.DataSource = marksController.GetMarksByUsername(Login.CurrentUserName);
+                Marks_dgv.Columns["CourseID"].Visible = false;
+                Marks_dgv.Columns["SubjectID"].Visible = false;
+                Marks_dgv.Columns["StudentID"].Visible = false;
+                Marks_dgv.Columns["UserID"].Visible = false;
+                Marks_dgv.Columns["ExamID"].Visible = false;
+                Marks_dgv.ClearSelection();
+            }
+            else
+            {
+                Marks_dgv.DataSource = null;
+                Marks_dgv.DataSource = marksController.GetAllMarks();
+                Marks_dgv.Columns["CourseID"].Visible = false;
+                Marks_dgv.Columns["SubjectID"].Visible = false;
+                Marks_dgv.Columns["StudentID"].Visible = false;
+                Marks_dgv.Columns["UserID"].Visible = false;
+                Marks_dgv.Columns["ExamID"].Visible = false;
+                Marks_dgv.ClearSelection();
+            }
         }
         private void LoadCourses() // Load course to ComboBox
         {
@@ -42,16 +58,50 @@ namespace UnicomTICManagementSystem.Views
             Courses_cbx.DataSource = courses;
             Courses_cbx.DisplayMember = "Name";
             Courses_cbx.ValueMember = "Id";
-            Courses_cbx.SelectedIndex = -1;
+            
         }
         private void ClearForm()
         {
-            Courses_cbx.SelectedIndex = -1;
+            //Courses_cbx.SelectedIndex = -1;
             Subjects_cbx.SelectedIndex = -1;
             Exams_cbx.SelectedIndex = -1;
-            Username_cbx.SelectedIndex = -1;
             Name_txt.Clear();
             Marks_txt.Clear();
+            Username_cbx.Visible = false;
+        }
+        private bool ShowMessage() // Return true if all fields are valid
+        {
+            if (Courses_cbx.SelectedIndex == -1 || Courses_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a course.");
+                return false;
+            }
+            if (Subjects_cbx.SelectedIndex == -1 || Subjects_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a subject.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(Name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter student's name.");
+                return false;
+            }
+            if (Username_cbx.SelectedIndex == -1 || Username_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select student's username.");
+                return false;
+            }
+            if (Exams_cbx.SelectedIndex == -1 || Exams_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select an exam.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(Marks_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Marks.");
+                return false;
+            }
+            return true;
         }
 
         private void Marks_dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -65,31 +115,48 @@ namespace UnicomTICManagementSystem.Views
         }
 
         private void Name_txt_TextChanged(object sender, EventArgs e)
-        {
+        {                     
             string name = Name_txt.Text.Trim();
-            List<Student> usernameList = studentController.GetUsernameByName(name);
+            int courseid = (int)Courses_cbx.SelectedValue;
 
-            if (usernameList.Count == 0)
+            List<Student> studentList = studentController.GetStudentByCourseID(courseid);
+            var UserIDs = new List<int>();
+
+            foreach (var student in studentList)
             {
-                label8.Visible = true;
-                Add_btn.Visible = false;
+                if (string.Equals(student.Name, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    UserIDs.Add(student.UserID);
+                    
+
+                    if (UserIDs.Count == 0)
+                    {
+                        label8.Visible = true;
+                        Add_btn.Visible = false;
+                    }
+                    else
+                    {
+                        var usernames = userController.GetUsernamesByIds(UserIDs);
+                        Username_cbx.Visible = true;
+                        label9.Visible = true;
+                        label8.Visible = false;
+                        Add_btn.Visible = true;
+                        label7.Visible = true;
+
+                        Username_cbx.DataSource = null;
+                        Username_cbx.DataSource = usernames;
+                        Username_cbx.DisplayMember = "Username";
+                        Username_cbx.ValueMember = "Id";
+                        Username_cbx.SelectedIndex = -1;
+                    }
+                }
+                else 
+                {
+                    label8.Visible = true;
+                    Add_btn.Visible = false;
+                }
             }
-            else
-            {
-                Username_cbx.Visible = true;
-                label9.Visible = true;
-                label8.Visible = false;
-                Add_btn.Visible = true;
-                label7.Visible = true;
-
-                Username_cbx.DataSource = null;
-                Username_cbx.DataSource = usernameList;
-                Username_cbx.DisplayMember = "Username";
-                Username_cbx.ValueMember = "Id";
-                Username_cbx.SelectedIndex = -1;
-            }
-
-
+                              
         }
 
         private void MarksForm_Load(object sender, EventArgs e)
@@ -98,6 +165,24 @@ namespace UnicomTICManagementSystem.Views
             label8.Visible = false;
             label7.Visible = false;
             Username_cbx.Visible = false;
+
+            if (Login.CurrentRole == "Student") // Hiding buttons According to their role
+            {
+                Courses_cbx.Visible = false;
+                Subjects_cbx.Visible = false;
+                Exams_cbx.Visible = false;
+                Name_txt.Visible = false;
+                Marks_txt.Visible = false;
+                Add_btn.Visible = false;
+                Update_btn.Visible = false;
+                Delete_btn.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+                label4.Visible = false;
+                label5.Visible = false;
+                label6.Visible = false;
+
+            }
         }
 
         private void Courses_cbx_SelectedIndexChanged(object sender, EventArgs e)
@@ -110,6 +195,7 @@ namespace UnicomTICManagementSystem.Views
                 Subjects_cbx.DataSource = subjects;
                 Subjects_cbx.DisplayMember = "Name";
                 Subjects_cbx.ValueMember = "Id";
+                Subjects_cbx.SelectedIndex = -1;
             }
         }
 
@@ -122,54 +208,72 @@ namespace UnicomTICManagementSystem.Views
                 var exams = examController.GetExamBySID(selectedSubjectId);
                 Exams_cbx.DataSource = exams;
                 Exams_cbx.DisplayMember = "Name";
-                Exams_cbx.ValueMember = "Id";                
+                Exams_cbx.ValueMember = "Id";
+                Exams_cbx.SelectedIndex = -1;
             }
         }
 
         private void Update_btn_Click(object sender, EventArgs e)
         {
+
             if (selectedMarksId == -1)
             {
                 MessageBox.Show("Please select a row to update.");
                 return;
             }
-
-            var mark = new Mark
+            if (ShowMessage())
             {
-                Id = selectedMarksId,
-                CourseId = (int)Courses_cbx.SelectedValue,
-                SubjectId = (int)Subjects_cbx.SelectedValue,
-                ExamId = (int)Exams_cbx.SelectedValue,
-                StudentId = (int)Username_cbx.SelectedValue,
-                Score = int.Parse(Marks_txt.Text.Trim())
+                int userid = (int)Username_cbx.SelectedValue;
+                var studentid = studentController.GetIdByUserID(userid);
 
-            };
-            marksController.UpdateMarks(mark);
-            LoadMarks();
-            MessageBox.Show("Row updated successfully!");
-            ClearForm();
+                var mark = new Mark
+                {
+                    Id = selectedMarksId,
+                    CourseId = (int)Courses_cbx.SelectedValue,
+                    SubjectId = (int)Subjects_cbx.SelectedValue,
+                    ExamId = (int)Exams_cbx.SelectedValue,
+                    StudentId = studentid.Id,
+                    UserId = userid,
+                    Score = int.Parse(Marks_txt.Text.Trim())
+
+                };
+                marksController.UpdateMarks(mark);
+                LoadMarks();
+                MessageBox.Show("Row updated successfully!");
+                ClearForm();
+                
+            }
+            
         }
 
         private void Add_btn_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(Marks_txt.Text.Trim(), out int score) || score < 0 || score > 100)
+            if (ShowMessage())
             {
-                MessageBox.Show("Marks must be between 0 and 100.", "Invalid Marks", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return; 
-            }
-            Mark mark = new Mark
-            {
-                CourseId = (int)Courses_cbx.SelectedValue,
-                SubjectId = (int)Subjects_cbx.SelectedValue,
-                ExamId = (int)Exams_cbx.SelectedValue,
-                StudentId = (int)Username_cbx.SelectedValue,
-                Score = int.Parse(Marks_txt.Text.Trim())
-            };
+                if (!int.TryParse(Marks_txt.Text.Trim(), out int score) || score < 0 || score > 100)
+                {
+                    MessageBox.Show("Marks must be between 0 and 100.", "Invalid Marks", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                int userid = (int)Username_cbx.SelectedValue;
+                var studentid = studentController.GetIdByUserID(userid);
 
-            marksController.AddMarks(mark);
-            LoadMarks();
-            MessageBox.Show("Marks Added Successfully");
-            ClearForm();
+                Mark mark = new Mark
+                {
+                    CourseId = (int)Courses_cbx.SelectedValue,
+                    SubjectId = (int)Subjects_cbx.SelectedValue,
+                    ExamId = (int)Exams_cbx.SelectedValue,
+                    StudentId = studentid.Id,
+                    UserId = userid,
+                    Score = int.Parse(Marks_txt.Text.Trim())
+                };
+
+                marksController.AddMarks(mark);
+                LoadMarks();
+                MessageBox.Show("Marks Added Successfully");
+               // ClearForm();
+            }
+           
         }
 
         private void Marks_dgv_SelectionChanged(object sender, EventArgs e)
@@ -190,7 +294,7 @@ namespace UnicomTICManagementSystem.Views
                     {
                         Courses_cbx.SelectedValue = mark.CourseId;
                         Subjects_cbx.SelectedValue = mark.SubjectId;
-                        Username_cbx.SelectedValue = mark.StudentId;
+                        Username_cbx.SelectedValue = mark.UserId;
                         Exams_cbx.SelectedValue = mark.ExamId; 
                         Marks_txt.Text = Convert.ToString(mark.Score);
                         Name_txt.Text = mark.StudentName;
@@ -220,6 +324,11 @@ namespace UnicomTICManagementSystem.Views
                 MessageBox.Show("Row Deleted Successfully");
                 ClearForm();
             }
+        }
+
+        private void Exams_cbx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

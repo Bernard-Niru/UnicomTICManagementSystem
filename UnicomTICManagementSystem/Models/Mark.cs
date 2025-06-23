@@ -18,6 +18,7 @@ namespace UnicomTICManagementSystem.Models
         public string ExamName { get; set; }
         public int StudentId { get; set; }
         public string StudentName { get; set; }
+        public int UserId { get; set; }
         public string Username { get; set; }
         public int Score { get; set; }
         

@@ -19,6 +19,7 @@ namespace UnicomTICManagementSystem.Views
         private StudentController studentController = new StudentController();
         private CourseController courseController = new CourseController();
         private UserController userController = new UserController();
+        private MarksController marksController = new MarksController();
         private UsersForm usersForm = new UsersForm();
         private int selectedStudentId = -1;
         public StudentsForm()
@@ -51,7 +52,49 @@ namespace UnicomTICManagementSystem.Views
             address_txt.Clear();
             course_cbx.SelectedIndex = -1;
         }
-
+        private bool ShowMessageAdd() // Return true if all fields are valid
+        {
+            if (string.IsNullOrWhiteSpace(name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Name.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(address_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Address.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(Username_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Username.");
+                return false;
+            }
+            if (course_cbx.SelectedIndex == -1 || course_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a course.");
+                return false;
+            }
+            return true;
+        }
+        private bool ShowMessageUpdate() // Return true if all fields are valid
+        {
+            if (string.IsNullOrWhiteSpace(name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Name.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(address_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Address.");
+                return false;
+            }
+            if (course_cbx.SelectedIndex == -1 || course_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a course.");
+                return false;
+            }
+            return true;
+        }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
@@ -78,34 +121,37 @@ namespace UnicomTICManagementSystem.Views
         }     
         private void Add_btn_Click(object sender, EventArgs e) // Adding student to both Students & Users Table
         {
-            string userName = Username_txt.Text.Trim();
-            string name = name_txt.Text.Trim();
-            User user = new User
+            if(ShowMessageAdd()) 
             {
-                Name = name,
-                Username = userName,
-                Password = "12345", 
-                Role = "Student"
-            };
-
-            bool added = userController.AddUser(user);
-            if (added)                                                      // check if username exists
-            {
-                User userId = userController.GetUserIDByUsername(userName); // Getting the UserID from Users table by Username
-
-                Student student = new Student
+                string userName = Username_txt.Text.Trim();
+                string name = name_txt.Text.Trim();
+                User user = new User
                 {
                     Name = name,
                     Username = userName,
-                    Address = address_txt.Text.Trim(),
-                    CourseID = (int)course_cbx.SelectedValue,
-                    UserID = userId.Id
+                    Password = "12345",
+                    Role = "Student"
                 };
 
-                studentController.AddStudent(student);
-                LoadStudents();
-                ClearForm();
-                MessageBox.Show("Student Added Successfully");
+                bool added = userController.AddUser(user);
+                if (added)                                                      // check if username exists
+                {
+                    User userId = userController.GetUserIDByUsername(userName); // Getting the UserID from Users table by Username
+
+                    Student student = new Student
+                    {
+                        Name = name,
+                        Address = address_txt.Text.Trim(),
+                        CourseID = (int)course_cbx.SelectedValue,
+                        UserID = userId.Id
+                    };
+
+                    studentController.AddStudent(student);
+                    LoadStudents();
+                    ClearForm();
+                    MessageBox.Show("Student Added Successfully");
+                }
+            
             }
         }
 
@@ -144,7 +190,7 @@ namespace UnicomTICManagementSystem.Views
                 var userID = studentController.GetUserID(selectedStudentId);     // Getting the UserID of the Deleted Student 
 
                 studentController.DeleteStudent(selectedStudentId);
-
+                marksController.DeleteMarksByStudentId(selectedStudentId);
                 userController.DeleteUser(userID.UserID);
               
                 LoadStudents();
@@ -164,6 +210,7 @@ namespace UnicomTICManagementSystem.Views
         }
         private void Update_btn_Click(object sender, EventArgs e) // Updating student from both Students & Users table 
         {
+            
             string newName = name_txt.Text.Trim();
             string newAddress = address_txt.Text.Trim();
 
@@ -172,39 +219,35 @@ namespace UnicomTICManagementSystem.Views
                 MessageBox.Show("Please select a student to update.");
                 return;
             }
-
-            if (string.IsNullOrWhiteSpace(newName) || string.IsNullOrWhiteSpace(newAddress))
+            if (ShowMessageUpdate())
             {
-                MessageBox.Show("Please enter both Name and Address.");
-                return;
-            }
+                var student = new Student
+                {
+                    Id = selectedStudentId,
+                    Name = newName,
+                    Address = newAddress,
+                    CourseID = (int)course_cbx.SelectedValue
 
-            var student = new Student
-            {
-                Id = selectedStudentId,
-                Name = newName,
-                Address = newAddress,
-                CourseID = (int)course_cbx.SelectedValue
+                };
+                studentController.UpdateStudent(student);
 
-            };
-            studentController.UpdateStudent(student);
-            
-            
-            MessageBox.Show("Student Updated Successfully");
-            var userID= studentController.GetUserID(selectedStudentId);
-           
-            var user = new User
-            {
-                Id = userID.UserID,
-                Name = newName,
-            };
-            userController.UpdateUser(user);
 
-            usersForm.LoadUsers();
-            LoadStudents();
-            ClearForm();
+                MessageBox.Show("Student Updated Successfully");
+                var userID = studentController.GetUserID(selectedStudentId);
+
+                var user = new User
+                {
+                    Id = userID.UserID,
+                    Name = newName,
+                };
+                userController.UpdateUser(user);
+
+                usersForm.LoadUsers();
+                LoadStudents();
+                ClearForm();
+            }            
+                       
         }
-
         private void address_txt_TextChanged(object sender, EventArgs e)
         {
 
@@ -235,10 +278,11 @@ namespace UnicomTICManagementSystem.Views
                     var student = studentController.GetStudentById(selectedStudentId);
                     if (student != null)
                     {
+                       
                         name_txt.Text = student.Name;
                         address_txt.Text = student.Address;
                         course_cbx.SelectedValue = student.CourseID;
-                    }
+                    }                  
                 }
             }
             else

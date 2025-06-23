@@ -30,7 +30,6 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.Rooms_dgv = new System.Windows.Forms.DataGridView();
-            this.Delete_btn = new System.Windows.Forms.Button();
             this.Update_btn = new System.Windows.Forms.Button();
             this.Add_btn = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -62,25 +61,12 @@
             this.Rooms_dgv.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Rooms_dgv_CellContentClick);
             this.Rooms_dgv.SelectionChanged += new System.EventHandler(this.Rooms_dgv_SelectionChanged);
             // 
-            // Delete_btn
-            // 
-            this.Delete_btn.BackColor = System.Drawing.Color.Red;
-            this.Delete_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Delete_btn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Delete_btn.Location = new System.Drawing.Point(331, 476);
-            this.Delete_btn.Name = "Delete_btn";
-            this.Delete_btn.Size = new System.Drawing.Size(75, 23);
-            this.Delete_btn.TabIndex = 3;
-            this.Delete_btn.Text = "Delete";
-            this.Delete_btn.UseVisualStyleBackColor = false;
-            this.Delete_btn.Click += new System.EventHandler(this.Delete_btn_Click);
-            // 
             // Update_btn
             // 
             this.Update_btn.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.Update_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Update_btn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Update_btn.Location = new System.Drawing.Point(493, 476);
+            this.Update_btn.Location = new System.Drawing.Point(368, 476);
             this.Update_btn.Name = "Update_btn";
             this.Update_btn.Size = new System.Drawing.Size(75, 23);
             this.Update_btn.TabIndex = 4;
@@ -93,7 +79,7 @@
             this.Add_btn.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.Add_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Add_btn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Add_btn.Location = new System.Drawing.Point(652, 476);
+            this.Add_btn.Location = new System.Drawing.Point(567, 476);
             this.Add_btn.Name = "Add_btn";
             this.Add_btn.Size = new System.Drawing.Size(75, 23);
             this.Add_btn.TabIndex = 5;
@@ -150,7 +136,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.Add_btn);
             this.Controls.Add(this.Update_btn);
-            this.Controls.Add(this.Delete_btn);
             this.Controls.Add(this.Rooms_dgv);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -168,7 +153,6 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView Rooms_dgv;
-        private System.Windows.Forms.Button Delete_btn;
         private System.Windows.Forms.Button Update_btn;
         private System.Windows.Forms.Button Add_btn;
         private System.Windows.Forms.Label label2;

@@ -40,6 +40,20 @@ namespace UnicomTICManagementSystem.Views
             Name_txt.Clear();
             RoomType_cbx.SelectedIndex -= 1;
         }
+        private bool ShowMessage() // Return true if all fields are valid
+        {
+            if (string.IsNullOrWhiteSpace(Name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Room Name.");
+                return false;
+            }
+            if (RoomType_cbx.SelectedIndex == -1 || RoomType_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a room type.");
+                return false;
+            }       
+            return true;
+        }
 
         private void Rooms_dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -77,17 +91,20 @@ namespace UnicomTICManagementSystem.Views
 
         private void Add_btn_Click(object sender, EventArgs e) // Addding room
         {
-            Room room = new Room
+            if (ShowMessage()) 
             {
-                Name = Name_txt.Text.Trim(),
-                RoomType = (string)RoomType_cbx.SelectedValue
+                Room room = new Room
+                {
+                    Name = Name_txt.Text.Trim(),
+                    RoomType = (string)RoomType_cbx.SelectedValue
 
 
-            };
-            roomController.AddRoom(room);
-            LoadRooms();
-            ClearForm();
-            MessageBox.Show("Room Added Successfully");
+                };
+                roomController.AddRoom(room);
+                LoadRooms();
+                ClearForm();
+                MessageBox.Show("Room Added Successfully");
+            }            
         }
 
         private void Back_btn_Click(object sender, EventArgs e)
@@ -96,20 +113,20 @@ namespace UnicomTICManagementSystem.Views
         }
         private void Delete_btn_Click(object sender, EventArgs e) // Deleting room
         {
-            if (selectedRoomId == -1)
-            {
-                MessageBox.Show("Please select a room to delete");
-                return;
-            }
+            //if (selectedRoomId == -1)
+            //{
+            //    MessageBox.Show("Please select a room to delete");
+            //    return;
+            //}
 
-            var confirmatiion = MessageBox.Show("Are you sure you want to delete this room?", "Confirm Delete", MessageBoxButtons.YesNo);
-            if (confirmatiion == DialogResult.Yes)
-            {
-                roomController.DeleteRoom(selectedRoomId);
-                ClearForm();
-                LoadRooms();
-                MessageBox.Show("Room Deleted Successfully");
-            }
+            //var confirmatiion = MessageBox.Show("Are you sure you want to delete this room?", "Confirm Delete", MessageBoxButtons.YesNo);
+            //if (confirmatiion == DialogResult.Yes)
+            //{
+            //    roomController.DeleteRoom(selectedRoomId);
+            //    ClearForm();
+            //    LoadRooms();
+            //    MessageBox.Show("Room Deleted Successfully");
+            //}
         }
 
     
@@ -122,22 +139,23 @@ namespace UnicomTICManagementSystem.Views
                 MessageBox.Show("Please select a Room to update.");
                 return;
             }
-
-            var room = new Room
+            if (ShowMessage()) 
             {
-                Id = selectedRoomId,
-                Name = Name_txt.Text,
-                RoomType = (string)RoomType_cbx.SelectedValue
+                var room = new Room
+                {
+                    Id = selectedRoomId,
+                    Name = Name_txt.Text,
+                    RoomType = (string)RoomType_cbx.SelectedValue
 
-            };
-            roomController.UpdateRoom(room);
-            LoadRooms();
-            ClearForm();    
-            MessageBox.Show("Rooom updated successfully!");
+                };
+                roomController.UpdateRoom(room);
+                LoadRooms();
+                ClearForm();
+                MessageBox.Show("Rooom updated successfully!");
+            }
 
         }
         
-
         private void RoomType_cbx_SelectedIndexChanged(object sender, EventArgs e)
         {
 

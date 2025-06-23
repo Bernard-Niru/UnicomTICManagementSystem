@@ -22,10 +22,10 @@ namespace UnicomTICManagementSystem.Controllers
             using (var getDBconn = DBConnection.GetConnection())
             {
                 var cmd = new SQLiteCommand(@"
-                    SELECT s.Id, s.Name,s.Username, s.Address, s.CourseID, s.UserID, Courses.Name AS CourseName,Users.Username AS Username
+                    SELECT s.Id, s.Name, s.Address, s.CourseID, s.UserID, Courses.Name AS CourseName,Users.Username AS Username
                     FROM Students s
-                    LEFT JOIN Courses ON s.CourseID = Courses.Id
-                    LEFT JOIN Users ON s.UserID = Users.Id", getDBconn);
+                    LEFT JOIN Users ON s.UserID = Users.Id
+                    LEFT JOIN Courses ON s.CourseID = Courses.Id", getDBconn);
 
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
@@ -33,12 +33,12 @@ namespace UnicomTICManagementSystem.Controllers
                     StudentList.Add(new Student
                     {
                         Id = reader.GetInt32(0),
-                        Name = reader.GetString(1),
-                        Username = reader.GetString(2),
-                        Address = reader.GetString(3),
-                        CourseID = reader.GetInt32(4),
-                        UserID = reader.GetInt32(5),
-                        CourseName = reader.IsDBNull(6) ? null : reader.GetString(6),
+                        Name = reader.GetString(1),                     
+                        Address = reader.GetString(2),
+                        CourseID = reader.GetInt32(3),
+                        UserID = reader.GetInt32(4),                      
+                        CourseName = reader.GetString(5),
+                        Username = reader.GetString(6),
                     });
                 }
             }
@@ -50,10 +50,9 @@ namespace UnicomTICManagementSystem.Controllers
         {
             using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand(@"INSERT INTO Students (Name,Username,Address,CourseID,UserID) 
-                                            VALUES (@Name,@Username,@Address,@CourseID,@UserID)", getDBconn);
+                var cmd = new SQLiteCommand(@"INSERT INTO Students (Name,Address,CourseID,UserID) 
+                                            VALUES (@Name,@Address,@CourseID,@UserID)", getDBconn);
                 cmd.Parameters.AddWithValue("@Name", student.Name);
-                cmd.Parameters.AddWithValue("@Username",student.Username);
                 cmd.Parameters.AddWithValue("@Address", student.Address);
                 cmd.Parameters.AddWithValue("@CourseID", student.CourseID);
                 cmd.Parameters.AddWithValue("@UserID", student.UserID);
@@ -99,10 +98,9 @@ namespace UnicomTICManagementSystem.Controllers
                         {
                             Id = reader.GetInt32(0),
                             Name = reader.GetString(1),
-                            Username = reader.GetString(2),
-                            Address = reader.GetString(3),
-                            CourseID = reader.GetInt32(4),
-                            UserID = reader.GetInt32(5)
+                            Address = reader.GetString(2),
+                            CourseID = reader.GetInt32(3),
+                            UserID = reader.GetInt32(4)
                         };
                     }
                 }
@@ -130,6 +128,27 @@ namespace UnicomTICManagementSystem.Controllers
             }
             return null;
         }
+        public Student GetIdByUserID(int userid)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("SELECT Id FROM Students WHERE UserID = @userid", getDBconn);
+                cmd.Parameters.AddWithValue("@userid", userid);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new Student
+                        {
+                            Id = reader.GetInt32(0)
+                        };
+                    }
+                }
+            }
+            return null;
+        }
+
         public void DeleteStudentByUserID(int userid)
         {
             using (var getDBconn = DBConnection.GetConnection())
@@ -150,35 +169,13 @@ namespace UnicomTICManagementSystem.Controllers
             }
 
         }
-        public List<Student> GetUsernameByName(string name)
-        {
-            var UsernameList = new List<Student>();
-
-            using (var getDBconn = DBConnection.GetConnection())
-            {
-              
-                var cmd = new SQLiteCommand("SELECT Id, Username FROM Students WHERE Name = @name COLLATE NOCASE", getDBconn);
-                cmd.Parameters.AddWithValue("@name", name);
-
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    UsernameList.Add(new Student
-                    {
-                        Id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
-                        Username = reader.IsDBNull(1) ? null : reader.GetString(1)
-                    });
-                }
-            }
-
-            return UsernameList;
-        }
-        public Student GetCIDByUsername(string username) 
+        
+        public Student GetCIDByUserID(int userid) 
         {
             using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand("SELECT CourseID FROM Students WHERE Username = @username", getDBconn);
-                cmd.Parameters.AddWithValue("@username", username);
+                var cmd = new SQLiteCommand("SELECT CourseID FROM Students WHERE UserID = @userid", getDBconn);
+                cmd.Parameters.AddWithValue("@userid", userid);
 
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -193,6 +190,30 @@ namespace UnicomTICManagementSystem.Controllers
             }
             return null;
         }
-        
+        public List<Student> GetStudentByCourseID(int courseid)
+        {
+            var studentList = new List<Student>();
+
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("SELECT Name, UserID FROM Students WHERE CourseID = @courseid", getDBconn);
+                cmd.Parameters.AddWithValue("@courseid", courseid);
+
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    studentList.Add(new Student
+                    {
+                        Name = reader.IsDBNull(0) ? null : reader.GetString(0), // Name is at index 0
+                        UserID = reader.IsDBNull(1) ? 0 : reader.GetInt32(1)  // UserID is at index 1
+                    });
+                }
+            }
+
+            return studentList;
+        }
+
+
+
     }
 }

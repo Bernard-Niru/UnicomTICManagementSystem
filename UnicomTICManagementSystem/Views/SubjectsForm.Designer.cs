@@ -34,9 +34,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.name_txt = new System.Windows.Forms.TextBox();
             this.Subjects_dgv = new System.Windows.Forms.DataGridView();
-            this.Delete_btn = new System.Windows.Forms.Button();
             this.Edit_btn = new System.Windows.Forms.Button();
             this.Add_btn = new System.Windows.Forms.Button();
+            this.Delete_btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Subjects_dgv)).BeginInit();
             this.SuspendLayout();
             // 
@@ -100,19 +100,6 @@
             this.Subjects_dgv.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Subjects_dgv_CellContentClick);
             this.Subjects_dgv.SelectionChanged += new System.EventHandler(this.Subjects_dgv_SelectionChanged);
             // 
-            // Delete_btn
-            // 
-            this.Delete_btn.BackColor = System.Drawing.Color.Red;
-            this.Delete_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Delete_btn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.Delete_btn.Location = new System.Drawing.Point(272, 476);
-            this.Delete_btn.Name = "Delete_btn";
-            this.Delete_btn.Size = new System.Drawing.Size(75, 23);
-            this.Delete_btn.TabIndex = 6;
-            this.Delete_btn.Text = "Delete";
-            this.Delete_btn.UseVisualStyleBackColor = false;
-            this.Delete_btn.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Edit_btn
             // 
             this.Edit_btn.BackColor = System.Drawing.SystemColors.MenuHighlight;
@@ -138,6 +125,19 @@
             this.Add_btn.Text = "Add";
             this.Add_btn.UseVisualStyleBackColor = false;
             this.Add_btn.Click += new System.EventHandler(this.Add_btn_Click);
+            // 
+            // Delete_btn
+            // 
+            this.Delete_btn.BackColor = System.Drawing.Color.Red;
+            this.Delete_btn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Delete_btn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.Delete_btn.Location = new System.Drawing.Point(272, 476);
+            this.Delete_btn.Name = "Delete_btn";
+            this.Delete_btn.Size = new System.Drawing.Size(75, 23);
+            this.Delete_btn.TabIndex = 6;
+            this.Delete_btn.Text = "Delete";
+            this.Delete_btn.UseVisualStyleBackColor = false;
+            this.Delete_btn.Click += new System.EventHandler(this.button1_Click);
             // 
             // SubjectsForm
             // 
@@ -173,8 +173,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox name_txt;
         private System.Windows.Forms.DataGridView Subjects_dgv;
-        private System.Windows.Forms.Button Delete_btn;
         private System.Windows.Forms.Button Edit_btn;
         private System.Windows.Forms.Button Add_btn;
+        private System.Windows.Forms.Button Delete_btn;
     }
 }

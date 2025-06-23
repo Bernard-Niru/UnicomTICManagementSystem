@@ -77,10 +77,11 @@ namespace UnicomTICManagementSystem.Controllers
         {
             using (var getDBconn = DBConnection.GetConnection())
             {
-                var cmd = new SQLiteCommand("UPDATE Users SET Name = @name WHERE Id = @id", getDBconn);
+                var cmd = new SQLiteCommand("UPDATE Users SET Name = @name  WHERE Id = @id", getDBconn);
                 cmd.Parameters.AddWithValue("@name", user.Name);
                 cmd.Parameters.AddWithValue("@id", user.Id);
                 cmd.ExecuteNonQuery();
+               
             }
         }
         //Deleting Data From User Table ==========================================================
@@ -143,6 +144,29 @@ namespace UnicomTICManagementSystem.Controllers
             }
             return null;
         }
+        public List<User> GetUsernameByName(string name)
+        {
+            var UsernameList = new List<User>();
+
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+
+                var cmd = new SQLiteCommand("SELECT Id, Username FROM Users WHERE Name = @name COLLATE NOCASE", getDBconn);
+                cmd.Parameters.AddWithValue("@name", name);
+
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    UsernameList.Add(new User
+                    {
+                        Id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                        Username = reader.IsDBNull(1) ? null : reader.GetString(1)
+                    });
+                }
+            }
+
+            return UsernameList;
+        }
         // Updating username by users ===================================================================================== 
         public bool UpdateUsername(int id, string username)
         {
@@ -182,7 +206,34 @@ namespace UnicomTICManagementSystem.Controllers
 
             }
 
-
         }
+        public List<User> GetUsernamesByIds(List<int> userids)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var query = "SELECT Id,Username FROM Users WHERE Id IN (" + string.Join(",", userids.Select((id, index) => "@Id" + index)) + ")";
+                var cmd = new SQLiteCommand(query, getDBconn);
+
+                for (int i = 0; i < userids.Count; i++)
+                {
+                    cmd.Parameters.AddWithValue("@Id" + i, userids[i]);
+                }
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    var usernameList = new List<User>();
+                    while (reader.Read())
+                    {
+                        usernameList.Add(new User
+                        {   Id = reader.GetInt32(0),                        
+                            Username = reader.GetString(1),
+                            
+                        });
+                    }
+                    return usernameList;
+                }
+            }
+        }
+
     }
 }

@@ -219,6 +219,7 @@
             this.Uname_txt.Name = "Uname_txt";
             this.Uname_txt.Size = new System.Drawing.Size(167, 20);
             this.Uname_txt.TabIndex = 15;
+            this.Uname_txt.TextChanged += new System.EventHandler(this.Uname_txt_TextChanged);
             // 
             // Pswd_txt
             // 

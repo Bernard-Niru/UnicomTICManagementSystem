@@ -36,26 +36,31 @@ namespace UnicomTICManagementSystem.Data
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Name TEXT NOT NULL
                     );
+                    
+                    CREATE TABLE IF NOT EXISTS Rooms
+                    (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Name TEXT NOT NULL,
+                    Type TEXT NOT NULL
+                    );
 
                     CREATE TABLE IF NOT EXISTS Students
                     (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Name TEXT NOT NULL,
-                    Username TEXT UNIQUE NOT NULL, 
+                    Name TEXT NOT NULL, 
                     Address TEXT NOT NULL,
                     CourseID INTEGER,
                     UserID INTEGER,
-                    FOREIGN KEY(Username) REFERENCES Users(Username)  ON UPDATE CASCADE,
-                    FOREIGN KEY (CourseID) REFERENCES Courses(Id),
-                    FOREIGN KEY(UserID) REFERENCES Users(Id)
+                    FOREIGN KEY (CourseID) REFERENCES Courses(Id) ON UPDATE CASCADE,
+                    FOREIGN KEY(UserID) REFERENCES Users(Id) ON UPDATE CASCADE 
                     );
 
-                     CREATE TABLE IF NOT EXISTS Subjects
+                    CREATE TABLE IF NOT EXISTS Subjects
                     (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Name TEXT NOT NULL,                
+                    Name TEXT NOT NULL,
                     CourseID INTEGER,
-                    FOREIGN KEY (CourseID) REFERENCES Courses(Id)
+                    FOREIGN KEY (CourseID) REFERENCES Courses(Id) ON UPDATE CASCADE 
                     );
                                        
                     CREATE TABLE IF NOT EXISTS Exams
@@ -67,9 +72,9 @@ namespace UnicomTICManagementSystem.Data
                     Date TEXT NOT NULL,
                     Time TEXT NOT NULL,
                     RoomID INTEGER,
-                    FOREIGN KEY(CourseID) REFERENCES Courses(Id),
-                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id),
-                    FOREIGN KEY (RoomID) REFERENCES Rooms(Id)
+                    FOREIGN KEY(CourseID) REFERENCES Courses(Id)  ON UPDATE CASCADE,
+                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id) ON UPDATE CASCADE,
+                    FOREIGN KEY (RoomID) REFERENCES Rooms(Id)  ON UPDATE CASCADE  
                     );
 
                     CREATE TABLE IF NOT EXISTS Marks
@@ -78,21 +83,16 @@ namespace UnicomTICManagementSystem.Data
                     CourseID INTEGER,
                     SubjectID INTEGER,
                     StudentID INTEGER,
+                    UserID INTEGER,
                     ExamID INTEGER,
                     Score INTEGER,
-                    FOREIGN KEY (CourseID) REFERENCES Courses(Id),
-                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id),
-                    FOREIGN KEY (StudentID) REFERENCES Students(Id),
-                    FOREIGN KEY (ExamID) REFERENCES Exams(Id)
+                    FOREIGN KEY (CourseID) REFERENCES Courses(Id)  ON UPDATE CASCADE,
+                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id ) ON UPDATE CASCADE,
+                    FOREIGN KEY (StudentID) REFERENCES Students(Id)  ON UPDATE CASCADE,
+                    FOREIGN KEY (UserID) REFERENCES Users(Id)  ON UPDATE CASCADE,
+                    FOREIGN KEY (ExamID) REFERENCES Exams(Id) ON UPDATE CASCADE  
                     );
                     
-                    CREATE TABLE IF NOT EXISTS Rooms
-                    (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Name TEXT NOT NULL,
-                    Type TEXT NOT NULL
-                    );
-
                      CREATE TABLE IF NOT EXISTS Timetables
                     (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -101,9 +101,9 @@ namespace UnicomTICManagementSystem.Data
                     Date TEXT NOT NULL,
                     Time TEXT NOT NULL,
                     RoomID INTEGER,
-                    FOREIGN KEY (CourseID) REFERENCES Courses(Id),
-                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id),
-                    FOREIGN KEY (RoomID) REFERENCES Rooms(Id)
+                    FOREIGN KEY (CourseID) REFERENCES Courses(Id) ON UPDATE CASCADE,
+                    FOREIGN KEY (SubjectID) REFERENCES Subjects(Id) ON UPDATE CASCADE,
+                    FOREIGN KEY (RoomID) REFERENCES Rooms(Id) ON UPDATE CASCADE 
                     );
                 ";
                 SQLiteCommand command = new SQLiteCommand(createTables, getDBconn);

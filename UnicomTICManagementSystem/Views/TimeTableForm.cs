@@ -31,12 +31,24 @@ namespace UnicomTICManagementSystem.Views
         }
         private void LoadTimetable() // Load data from Timetable table to DataGridView
         {
-            Timetable_dgv.DataSource = null;
-            Timetable_dgv.DataSource = timeTableController.GetTimetable();
-            Timetable_dgv.Columns["CourseID"].Visible = false;
-            Timetable_dgv.Columns["SubjectID"].Visible = false;
-            Timetable_dgv.Columns["RoomID"].Visible = false;
-            Timetable_dgv.ClearSelection();
+            if (Login.CurrentRole == "Student")                                               // Show only the tImetable of the Course Student takes 
+            {
+                Timetable_dgv.DataSource = null;
+                Timetable_dgv.DataSource = timeTableController.GetTimetableByCourseName(Login.CurrentCourse);
+                Timetable_dgv.Columns["CourseID"].Visible = false;
+                Timetable_dgv.Columns["SubjectID"].Visible = false;
+                Timetable_dgv.Columns["RoomID"].Visible = false;
+                Timetable_dgv.ClearSelection();
+            }
+            else
+            {
+                Timetable_dgv.DataSource = null;
+                Timetable_dgv.DataSource = timeTableController.GetTimetable();
+                Timetable_dgv.Columns["CourseID"].Visible = false;
+                Timetable_dgv.Columns["SubjectID"].Visible = false;
+                Timetable_dgv.Columns["RoomID"].Visible = false;
+                Timetable_dgv.ClearSelection();
+            }
         }
         private void LoadCourses() // Load course to ComboBox
         {
@@ -56,9 +68,28 @@ namespace UnicomTICManagementSystem.Views
         }
         private void ClearForm() 
         {
-            Courses_cbx.SelectedIndex = 1;
-            Subjects_cbx.SelectedIndex = 1;
-            Rooms_cbx.SelectedIndex = 1;
+            Courses_cbx.SelectedIndex = -1;
+            Subjects_cbx.SelectedIndex = -1;
+            Rooms_cbx.SelectedIndex = -1;
+        }
+        private bool ShowMessage() // Return true if all fields are valid
+        {
+            if (Courses_cbx.SelectedIndex == -1 || Courses_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a course.");
+                return false;
+            }
+            if (Subjects_cbx.SelectedIndex == -1 || Subjects_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a subject.");
+                return false;
+            }
+            if (Rooms_cbx.SelectedIndex == -1 || Rooms_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a room.");
+                return false;
+            }
+            return true;
         }
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -111,38 +142,44 @@ namespace UnicomTICManagementSystem.Views
                 MessageBox.Show("Please select a row to update.");
                 return;
             }
-
-            var timetable = new Timetable
+            if (ShowMessage()) 
             {
-                Id = selectedTimetableId,
-                CourseId = (int)Courses_cbx.SelectedValue,
-                SubjectId = (int)Subjects_cbx.SelectedValue,
-                Date = Date_dtp.Text,
-                Time = Time_dtp.Text,
-                RoomId = (int)Rooms_cbx.SelectedValue
+                var timetable = new Timetable
+                {
+                    Id = selectedTimetableId,
+                    CourseId = (int)Courses_cbx.SelectedValue,
+                    SubjectId = (int)Subjects_cbx.SelectedValue,
+                    Date = Date_dtp.Text,
+                    Time = Time_dtp.Text,
+                    RoomId = (int)Rooms_cbx.SelectedValue
 
-            };
-            timeTableController.UpdateTimetable(timetable);
-            LoadTimetable();
-            MessageBox.Show("Timetable updated successfully!");
-            ClearForm();
-
+                };
+                timeTableController.UpdateTimetable(timetable);
+                LoadTimetable();
+                MessageBox.Show("Timetable updated successfully!");
+                ClearForm();
+            }
+            
         }
         private void button4_Click(object sender, EventArgs e) // Add
         {
-            Timetable timetable = new Timetable
+            if (ShowMessage())
             {
-                CourseId = (int)Courses_cbx.SelectedValue,
-                SubjectId = (int)Subjects_cbx.SelectedValue,
-                Date = Date_dtp.Text,
-                Time = Time_dtp.Text,
-                RoomId = (int)Rooms_cbx.SelectedValue,
-            };
+                Timetable timetable = new Timetable
+                {
+                    CourseId = (int)Courses_cbx.SelectedValue,
+                    SubjectId = (int)Subjects_cbx.SelectedValue,
+                    Date = Date_dtp.Text,
+                    Time = Time_dtp.Text,
+                    RoomId = (int)Rooms_cbx.SelectedValue,
+                };
 
-            timeTableController.AddtoTimetable(timetable);
-            LoadTimetable();
-            MessageBox.Show(" Added Successfully");
-            ClearForm();
+                timeTableController.AddtoTimetable(timetable);
+                LoadTimetable();
+                MessageBox.Show(" Added Successfully");
+                ClearForm();
+            }
+            
         }
 
         private void Timetable_dgv_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -156,10 +193,12 @@ namespace UnicomTICManagementSystem.Views
 
             if (int.TryParse(Courses_cbx.SelectedValue.ToString(), out int selectedCourseId))
             {
+
                 var subjects = subjectController.GetSubjectByCoID(selectedCourseId);
                 Subjects_cbx.DataSource = subjects;
                 Subjects_cbx.DisplayMember = "Name";
                 Subjects_cbx.ValueMember = "Id";
+                Subjects_cbx.SelectedIndex = -1;
             }
         }
 

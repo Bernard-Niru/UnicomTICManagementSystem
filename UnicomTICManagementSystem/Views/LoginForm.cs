@@ -58,7 +58,7 @@ namespace UnicomTICManagementSystem
                 {
                     Login.CurrentRole = "Student";
 
-                    var courseid = studentController.GetCIDByUsername(user1.Username);
+                    var courseid = studentController.GetCIDByUserID(user1.Id);
                     var course = courseController.GetCourseById(courseid.CourseID);
 
                     Login.CurrentCourse = course.Name;

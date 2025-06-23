@@ -16,6 +16,10 @@ namespace UnicomTICManagementSystem.Views
     {
         private SubjectController subjectController = new SubjectController();
         private CourseController courseController = new CourseController();
+        private MarksController marksController = new MarksController();
+        private TimeTableController timeTableController = new TimeTableController();
+        private ExamController examController = new ExamController();   
+
         private int selectedSubjectId = -1;
         public SubjectsForm()
         {
@@ -45,8 +49,21 @@ namespace UnicomTICManagementSystem.Views
             name_txt.Clear();
             course_cbx.SelectedIndex = -1;
         }
-
-        private void button1_Click(object sender, EventArgs e) // Deleting subject
+        private bool ShowMessage() // Return true if all fields are valid
+        {
+            if (string.IsNullOrWhiteSpace(name_txt.Text.Trim()))
+            {
+                MessageBox.Show("Please enter Subject name.");
+                return false;
+            }         
+            if (course_cbx.SelectedIndex == -1 || course_cbx.SelectedValue == null)
+            {
+                MessageBox.Show("Please select a course.");
+                return false;
+            }
+            return true;
+        }
+        private void button1_Click(object sender, EventArgs e) 
         {
             if (selectedSubjectId == -1)
             {
@@ -57,7 +74,11 @@ namespace UnicomTICManagementSystem.Views
             var confirmatiion = MessageBox.Show("Are you sure you want to delete this subject?", "Confirm Delete", MessageBoxButtons.YesNo);
             if (confirmatiion == DialogResult.Yes)
             {
-                subjectController.DeleteSubject(selectedSubjectId);                            
+                subjectController.DeleteSubject(selectedSubjectId);
+
+                marksController.DeleteMarksBySubjectId(selectedSubjectId);
+                timeTableController.DeleteTimetableBySubjectID(selectedSubjectId);        // Deleting related data from other Tables
+                examController.DeleteExamBySubjectID(selectedSubjectId);
                 ClearForm();
                 LoadSubjects();
                 MessageBox.Show("Subject Deleted Successfully");
@@ -70,17 +91,20 @@ namespace UnicomTICManagementSystem.Views
         }
 
         private void Add_btn_Click(object sender, EventArgs e) // Adding subject
-        {          
-            Subject subject = new Subject
+        {
+            if (ShowMessage()) 
             {
-                Name = name_txt.Text.Trim(),
-                CourseID = (int)course_cbx.SelectedValue
-            };
-            subjectController.AddSubject(subject);
-            LoadSubjects();
-            ClearForm();
-            MessageBox.Show("Subject Added Successfully");
-            
+                Subject subject = new Subject
+                {
+                    Name = name_txt.Text.Trim(),
+                    CourseID = (int)course_cbx.SelectedValue
+                };
+                subjectController.AddSubject(subject);
+                LoadSubjects();
+                ClearForm();
+                MessageBox.Show("Subject Added Successfully");
+            }
+
         }
 
         private void name_txt_TextChanged(object sender, EventArgs e)
@@ -129,13 +153,14 @@ namespace UnicomTICManagementSystem.Views
 
         private void Edit_btn_Click(object sender, EventArgs e) // Updating Subject
         {
+                       
+            if (selectedSubjectId == -1)
             {
-                if (selectedSubjectId == -1)
-                {
-                    MessageBox.Show("Please select a subject to update.");
-                    return;
-                }
-
+                MessageBox.Show("Please select a subject to update.");
+                return;
+            }
+            if (ShowMessage())
+            {
                 var subject = new Subject
                 {
                     Id = selectedSubjectId,
@@ -145,12 +170,12 @@ namespace UnicomTICManagementSystem.Views
                 };
                 subjectController.UpdateSubject(subject);
                 ClearForm();
-                LoadSubjects();               
+                LoadSubjects();
                 MessageBox.Show("Subject Upadted Successfully!");
 
             }
-        }
 
+        }
         private void SubjectsForm_Load(object sender, EventArgs e)
         {
 

@@ -49,6 +49,47 @@ namespace UnicomTICManagementSystem.Controllers
             }
             return ExamList;
         }
+        //Getting Data of the Student's Course who logged in =========================================
+        public List<Exam> GetExamsByCourseName(string courseName)
+        {
+            var examList = new List<Exam>();
+
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand(@"
+            SELECT e.Id, e.Name, e.CourseID, e.SubjectID, e.Date, e.Time, e.RoomID,
+            Courses.Name AS CourseName, Subjects.Name AS SubjectName, Rooms.Name AS RoomName
+            FROM Exams e
+            LEFT JOIN Courses ON e.CourseID = Courses.Id
+            LEFT JOIN Subjects ON e.SubjectID = Subjects.Id
+            LEFT JOIN Rooms ON e.RoomID = Rooms.Id
+            WHERE Courses.Name = @courseName", getDBconn);
+
+                cmd.Parameters.AddWithValue("@courseName", courseName);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        examList.Add(new Exam
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            CourseId = reader.GetInt32(2),
+                            SubjectId = reader.GetInt32(3),
+                            Date = reader.GetString(4),
+                            Time = reader.GetString(5),
+                            RoomId = reader.GetInt32(6),
+                            CourseName = reader.IsDBNull(7) ? null : reader.GetString(7),
+                            SubjectName = reader.IsDBNull(8) ? null : reader.GetString(8),
+                            RoomName = reader.IsDBNull(9) ? null : reader.GetString(9),
+                        });
+                    }
+                }
+            }
+            return examList;
+        }
+
 
         //Adding Data To Exams Table =====================================================================
         public void AddExam(Exam exam)
@@ -118,6 +159,16 @@ namespace UnicomTICManagementSystem.Controllers
             {
                 var cmd = new SQLiteCommand("DELETE FROM Exams WHERE Id = @id", getDBconn);
                 cmd.Parameters.AddWithValue("@id", id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        //Deleting Data From Exams Table By SubjectID =========================================================
+        public void DeleteExamBySubjectID(int subjectid)
+        {
+            using (var getDBconn = DBConnection.GetConnection())
+            {
+                var cmd = new SQLiteCommand("DELETE FROM Exams WHERE SubjectID = @subjectid", getDBconn);
+                cmd.Parameters.AddWithValue("@subjectid", subjectid);
                 cmd.ExecuteNonQuery();
             }
         }

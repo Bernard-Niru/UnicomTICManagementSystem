@@ -22,6 +22,7 @@ namespace UnicomTICManagementSystem.Controllers
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+                    user1.Id = reader.GetInt32(0);
                     user1.Name = reader.GetString(1);
                     user1.Username = reader.GetString(2);
                     user1.Password = reader.GetString(3);

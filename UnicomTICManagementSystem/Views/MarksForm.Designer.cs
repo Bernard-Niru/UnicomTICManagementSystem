@@ -150,6 +150,7 @@
             this.Exams_cbx.Name = "Exams_cbx";
             this.Exams_cbx.Size = new System.Drawing.Size(121, 21);
             this.Exams_cbx.TabIndex = 9;
+            this.Exams_cbx.SelectedIndexChanged += new System.EventHandler(this.Exams_cbx_SelectedIndexChanged);
             // 
             // Marks_txt
             // 
