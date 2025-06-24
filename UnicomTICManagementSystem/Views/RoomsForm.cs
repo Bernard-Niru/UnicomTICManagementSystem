@@ -151,7 +151,7 @@ namespace UnicomTICManagementSystem.Views
                 roomController.UpdateRoom(room);
                 LoadRooms();
                 ClearForm();
-                MessageBox.Show("Rooom updated successfully!");
+                MessageBox.Show("Room updated successfully!");
             }
 
         }

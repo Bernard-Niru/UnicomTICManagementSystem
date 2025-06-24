@@ -136,7 +136,7 @@ namespace UnicomTICManagementSystem.Views
             courseController.UpdateCourse(course);
             name_txt.Clear() ;
             LoadCourses();
-            MessageBox.Show("Course Upadted Successfully!");
+            MessageBox.Show("Course Updated Successfully!");
 
             
 
